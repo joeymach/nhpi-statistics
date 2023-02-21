@@ -4,6 +4,9 @@ import java.io.*;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Date;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Double.valueOf;
 import static java.lang.Integer.parseInt;
 
 public class ConnectDatabase {
@@ -39,24 +42,39 @@ public class ConnectDatabase {
 
             lineReader.readLine();
             while ((lineText=lineReader.readLine())!=null){
-                String[] data=lineText.split(",");
 
-                int year = parseInt(data[0].split("-")[0]);
-                int month = parseInt(data[0].split("-")[1]);
+                int i = lineText.lastIndexOf(",");
+                String[] data =  {lineText.substring(0, i), lineText.substring(i + 1)};
+                String[] dateAndLocation = data[0].split(",", 2);
 
-                String[] location = data[1].replaceAll("[\"]", "").split(", ");
+                int year = parseInt(dateAndLocation[0].split("-")[0]);
+                int month = parseInt(dateAndLocation[0].split("-")[1]);
 
-                if(location.length > 1) {
-                    length = location.length - 1;
+                int x = dateAndLocation[1].lastIndexOf(",");
+                String city, province;
+                if(x >= 0) {
+                    String[] location =  {dateAndLocation[1].substring(0, x), dateAndLocation[1].substring(x + 2)};
+                    city = location[0].replaceAll("\"", "");
+                    province = location[1].replaceAll("\"", "");
                 } else {
-                    length = 0;
+                    city = "";
+                    province = dateAndLocation[1];
                 }
 
-                String city = String.join(", ", Arrays.copyOfRange(location, 0, location.length - 1));
-                String province = location[location.length - 1];
+                Double value = 0.00;
+                try{
+                    value = parseDouble(data[data.length-1]);
+                } catch(Exception e) {
+                }
 
-                System.out.println("city " + city);
-                System.out.println("prov  " + province);
+                statement.setInt(1, year);
+                statement.setInt(2, month);
+                statement.setString(3, city);
+                statement.setString(4, province);
+                statement.setDouble(5, value);
+
+
+                statement.addBatch();
 
                 if(count%batchSize==0){
                     statement.executeBatch();
