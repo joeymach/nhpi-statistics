@@ -15,7 +15,7 @@ public class ConnectDatabase {
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
-    public void readDataBase() throws Exception {
+    public void establishConnection() throws Exception {
         int batchSize=20;
         String filePath="nhpi.csv";
 
@@ -73,7 +73,6 @@ public class ConnectDatabase {
                 statement.setString(4, province);
                 statement.setDouble(5, value);
 
-
                 statement.addBatch();
 
                 if(count%batchSize==0){
@@ -92,4 +91,62 @@ public class ConnectDatabase {
 
     }
 
+    public Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Setup the connection with the DB
+            connection = DriverManager
+                    .getConnection("jdbc:mysql://localhost/nhpi?"
+                            + "user=root&password=");
+
+            connection.setAutoCommit(false);
+        } catch(Exception exception) {
+            exception.printStackTrace();
+        }
+        return this.connection;
+    }
+
+    public static String getQuery(String province, String city, String fromYear,
+                           String fromMonth, String toYear, String toMonth) {
+        String query = "SELECT * from nhpi";
+        if (province != "All" || city != "All" ||
+                fromYear != "All" || fromMonth != "All" ||
+                toYear != "All" || toMonth != "All") {
+            query += " WHERE";
+        }
+        int queryCount = 0;
+
+        if(province != "All") {
+            if (queryCount > 0) {
+                query += " AND";
+            }
+            query += " province=\"" + province + "\"";
+            queryCount += 1;
+        }
+        if(city != "All") {
+            if (queryCount > 0) {
+                query += " AND";
+            }
+            query += " city=\"" + city + "\"";
+            queryCount += 1;
+        }
+
+        if(fromYear != "All" && fromMonth != "All") {
+            if (queryCount > 0) {
+                query += " AND";
+            }
+            query += " ((year=" + fromYear + " AND month>=" + fromMonth + ") OR year>=" + (parseInt(fromYear) + 1) + ")";
+            queryCount += 1;
+        }
+        if(toYear != "All" && toMonth != "All") {
+            if (queryCount > 0) {
+                query += " AND";
+            }
+            query += " ((year=" + toYear + " AND month<=" + toMonth + ") OR year<=" + (parseInt(toYear) - 1) + ")";
+            queryCount += 1;
+        }
+
+        query += ";";
+        return query;
+    }
 }
