@@ -197,6 +197,7 @@ public class MainUI extends JFrame implements ActionListener {
 
 		if (e.getSource() == loadData) {
 			createTableForDataLoading(midContainer, data);
+			frame.setVisible(true);
 		}
 
 		if (e.getSource() == addTimeSeriesButton) {
