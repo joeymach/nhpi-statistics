@@ -160,13 +160,6 @@ public class MainUI extends JFrame implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(provincesList.getSelectedItem().toString() + " " +
-				cityList.getSelectedItem().toString() + " " +
-				fromYearList.getSelectedItem().toString() + " " +
-				fromMonthList.getSelectedItem().toString() + " " +
-				toYearList.getSelectedItem().toString() + " " +
-				toMonthList.getSelectedItem().toString());
-
 		try {
 			data = getDataFromDatabase(provincesList.getSelectedItem().toString(),
 					cityList.getSelectedItem().toString(),
@@ -201,11 +194,6 @@ public class MainUI extends JFrame implements ActionListener {
 		ArrayList<String[]> data = new ArrayList<String[]>();
 		while (result.next())
 		{
-			System.out.println(result.getString(1)
-					+ " " + result.getString(2)
-					+ " " + result.getString(3)
-					+ " " + result.getString(4)
-					+ " " + result.getString(5));
 			data.add(new String[]{result.getString(1),
 					result.getString(2),
 					result.getString(3),
