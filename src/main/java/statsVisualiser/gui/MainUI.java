@@ -64,10 +64,17 @@ public class MainUI extends JFrame implements ActionListener {
 	JComboBox<String> toYearList;
 	JComboBox<String> toMonthList;
 	static JPanel midContainer = new JPanel();
-	JButton submitButton = new JButton("Submit");
-	JButton addTimeSeries = new JButton("Add Time Series");
 
-	ArrayList<String[]> data = new ArrayList<String[]>();
+	JButton loadData = new JButton("Load Data");
+	JButton addTimeSeriesButton = new JButton("Add Time Series");
+
+	XYPlot initialTimeSeriesPlot = new XYPlot();
+	JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
+			new Font("Serif", java.awt.Font.BOLD, 18), initialTimeSeriesPlot, true);
+	JPanel initialTimeSeriesPanel = new JPanel();
+	TimeSeriesCollection initialTimeSeriesDataset = new TimeSeriesCollection();
+
+	ArrayList<String[][]> dataList = new ArrayList<String[][]>();
 
 	private static MainUI instance;
 
@@ -112,6 +119,7 @@ public class MainUI extends JFrame implements ActionListener {
 		JComboBox<String> methodsList = new JComboBox<String>(methodsNames);
 
 		JPanel north = new JPanel();
+		north.setLayout(new GridLayout(2, 1));
 		headerSelection(north);
 		getContentPane().add(north, BorderLayout.NORTH);
 
@@ -120,6 +128,19 @@ public class MainUI extends JFrame implements ActionListener {
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		getContentPane().add(scrPane, BorderLayout.CENTER);
+
+		ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
+		chartPanel.setPreferredSize(new Dimension(400, 300));
+		chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		chartPanel.setBackground(Color.white);
+		initialTimeSeriesPanel.add(chartPanel);
+		initialTimeSeriesPlot.setDataset(0, initialTimeSeriesDataset);
+		initialTimeSeriesPlot.setRenderer(0, new XYSplineRenderer());
+		DateAxis domainAxis = new DateAxis("Year");
+		initialTimeSeriesPlot.setDomainAxis(domainAxis);
+		initialTimeSeriesPlot.setRangeAxis(new NumberAxis("NHPI % Change Monthly"));
+
+		midContainer.add(initialTimeSeriesPanel, BorderLayout.CENTER);
 	}
 
 	public void headerSelection(JPanel north) {
@@ -154,12 +175,14 @@ public class MainUI extends JFrame implements ActionListener {
 		north.add(toYearList);
 		north.add(toMonth);
 		north.add(toMonthList);
-
-		north.add(submitButton);
-		submitButton.addActionListener(this);
+		north.add(loadData);
+		loadData.addActionListener(this);
+		north.add(addTimeSeriesButton);
+		addTimeSeriesButton.addActionListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		String[][] data = new String[0][];
 		try {
 			data = getDataFromDatabase(provincesList.getSelectedItem().toString(),
 					cityList.getSelectedItem().toString(),
@@ -170,18 +193,19 @@ public class MainUI extends JFrame implements ActionListener {
 		} catch(Exception exception){
 			exception.printStackTrace();
 		}
+		dataList.add(data);
 
-		createTableForDataLoading(midContainer, data);
+		if (e.getSource() == loadData) {
+			createTableForDataLoading(midContainer, data);
+		}
 
-		JPanel west = new JPanel();
-		createTimeSeries(west);
-		midContainer.add(west, BorderLayout.CENTER);
-
-		frame.setVisible(true);
-
+		if (e.getSource() == addTimeSeriesButton) {
+			createTimeSeriesForData();
+			frame.setVisible(true);
+		}
 	}
 
-	private ArrayList<String[]> getDataFromDatabase(String province, String city, String fromYear,
+	private String[][] getDataFromDatabase(String province, String city, String fromYear,
 									 String fromMonth, String toYear, String toMonth) throws SQLException {
 		ConnectDatabase mysql = new ConnectDatabase();
 		Connection connection = mysql.getConnection();
@@ -201,16 +225,17 @@ public class MainUI extends JFrame implements ActionListener {
 					result.getString(5)});
 		}
 		connection.close();
-		return data;
+
+		String[][] dataCleaned = new String[data.size()][5];
+		Arrays.setAll(dataCleaned, data::get);
+
+		return dataCleaned;
 	}
 
-	private void createTableForDataLoading(JPanel container, ArrayList<String[]> data) {
+	private void createTableForDataLoading(JPanel container, String[][] data) {
 		String[] columnNames = {"Year", "Month", "City", "Province", "NHPI % Change"};
 
-		String[][] data1 = new String[data.size()][5];
-		Arrays.setAll(data1, data::get);
-
-		DefaultTableModel model = new DefaultTableModel(data1, columnNames);
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
 
 		JTable table = new JTable(model);
 
@@ -220,80 +245,22 @@ public class MainUI extends JFrame implements ActionListener {
 		pane.setPreferredSize(new Dimension(600, 400));
 		pane.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-		container.add(pane);
+		container.add(pane, BorderLayout.AFTER_LINE_ENDS);
 	}
 
-	private void createTimeSeries(JPanel west) {
-		TimeSeries series1 = new TimeSeries("Mortality/1000 births");
-		series1.add(new Year(2018), 5.6);
-		series1.add(new Year(2017), 5.7);
-		series1.add(new Year(2016), 5.8);
-		series1.add(new Year(2015), 5.8);
-		series1.add(new Year(2014), 5.9);
-		series1.add(new Year(2013), 6.0);
-		series1.add(new Year(2012), 6.1);
-		series1.add(new Year(2011), 6.2);
-		series1.add(new Year(2010), 6.4);
-
-		TimeSeries series2 = new TimeSeries("Health Expenditure per Capita");
-		series2.add(new Year(2018), 10624);
-		series2.add(new Year(2017), 10209);
-		series2.add(new Year(2016), 9877);
-		series2.add(new Year(2015), 9491);
-		series2.add(new Year(2014), 9023);
-		series2.add(new Year(2013), 8599);
-		series2.add(new Year(2012), 8399);
-		series2.add(new Year(2011), 8130);
-		series2.add(new Year(2010), 7930);
-		TimeSeriesCollection dataset2 = new TimeSeriesCollection();
-		dataset2.addSeries(series2);
-
-		TimeSeries series3 = new TimeSeries("Hospital Beds/1000 people");
-		series3.add(new Year(2018), 2.92);
-		series3.add(new Year(2017), 2.87);
-		series3.add(new Year(2016), 2.77);
-		series3.add(new Year(2015), 2.8);
-		series3.add(new Year(2014), 2.83);
-		series3.add(new Year(2013), 2.89);
-		series3.add(new Year(2012), 2.93);
-		series3.add(new Year(2011), 2.97);
-		series3.add(new Year(2010), 3.05);
-
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		dataset.addSeries(series1);
-		dataset.addSeries(series3);
-
-		XYPlot plot = new XYPlot();
-		XYSplineRenderer splinerenderer1 = new XYSplineRenderer();
-		XYSplineRenderer splinerenderer2 = new XYSplineRenderer();
-
-		plot.setDataset(0, dataset);
-		plot.setRenderer(0, splinerenderer1);
-		DateAxis domainAxis = new DateAxis("Year");
-		plot.setDomainAxis(domainAxis);
-		plot.setRangeAxis(new NumberAxis(""));
-
-		plot.setDataset(1, dataset2);
-		plot.setRenderer(1, splinerenderer2);
-		plot.setRangeAxis(1, new NumberAxis("US$"));
-
-		plot.mapDatasetToRangeAxis(0, 0);// 1st dataset to 1st y-axis
-		plot.mapDatasetToRangeAxis(1, 1); // 2nd dataset to 2nd y-axis
-
-		JFreeChart chart = new JFreeChart("Mortality vs Expenses & Hospital Beds",
-				new Font("Serif", java.awt.Font.BOLD, 18), plot, true);
-
-		ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(400, 300));
-		chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-		chartPanel.setBackground(Color.white);
-		west.add(chartPanel);
-
+	private void createTimeSeriesForData() {
+		for(String[][] dataset : dataList) {
+			TimeSeries series = new TimeSeries("");
+			for(String[] row : dataset) {
+				series.addOrUpdate(new Year(Integer.parseInt(row[0])), Double.parseDouble(row[4]));
+			}
+			initialTimeSeriesDataset.addSeries(series);
+		}
 	}
 
 	public static void main(String[] args) {
 		frame = MainUI.getInstance();
-		frame.setSize(1400, 900);
+		frame.setSize(1600, 900);
 		frame.setVisible(true);
 	}
 }
