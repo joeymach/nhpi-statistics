@@ -194,7 +194,6 @@ public class MainUI extends JFrame implements ActionListener {
 		Connection connection = mysql.getConnection();
 
 		String query = ConnectDatabase.getQuery(province, city, fromYear, fromMonth, toYear, toMonth);
-		String query1 = "SELECT * from nhpi;";
 
 		PreparedStatement statement = connection.prepareStatement(query);
 		ResultSet result = statement.executeQuery();
@@ -216,6 +215,7 @@ public class MainUI extends JFrame implements ActionListener {
 		connection.close();
 		return data;
 	}
+
 	private void createTableForDataLoading(JPanel container, ArrayList<String[]> data) {
 		String[] columnNames = {"Year", "Month", "City", "Province", "NHPI % Change"};
 
