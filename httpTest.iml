@@ -23,5 +23,9 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="commons-io-2.11" level="project" />
+    <orderEntry type="library" name="commons.io" level="project" />
+    <orderEntry type="library" name="commons-math-4" level="project" />
+    <orderEntry type="library" name="apache.commons.math3" level="project" />
   </component>
 </module>
