@@ -68,6 +68,7 @@ public class MainUI extends JFrame implements ActionListener {
 	TimeSeriesCollection initialTimeSeriesDataset = new TimeSeriesCollection();
 
 	ArrayList<String[][]> dataList = new ArrayList<String[][]>();
+	ArrayList<String[][]> dataListForTimeSeries = new ArrayList<String[][]>();
 
 	private static MainUI instance;
 
@@ -187,6 +188,7 @@ public class MainUI extends JFrame implements ActionListener {
 			exception.printStackTrace();
 		}
 		dataList.add(data);
+		dataListForTimeSeries.add(data);
 
 		if (e.getSource() == loadData) {
 			createTableForDataLoading(midContainer, data);
@@ -243,13 +245,14 @@ public class MainUI extends JFrame implements ActionListener {
 	}
 
 	private void createTimeSeriesForData() {
-		for(String[][] dataset : dataList) {
+		for(String[][] dataset : dataListForTimeSeries) {
 			TimeSeries series = new TimeSeries("");
 			for(String[] row : dataset) {
 				series.addOrUpdate(new Year(Integer.parseInt(row[0])), Double.parseDouble(row[4]));
 			}
 			initialTimeSeriesDataset.addSeries(series);
 		}
+		dataListForTimeSeries = new ArrayList<String[][]>();
 	}
 
 	public static void main(String[] args) {
