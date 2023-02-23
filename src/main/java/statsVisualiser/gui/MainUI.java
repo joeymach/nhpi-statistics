@@ -203,8 +203,8 @@ public class MainUI extends JFrame implements ActionListener {
 
 	private String[][] getDataFromDatabase(String province, String city, String fromYear,
 									 String fromMonth, String toYear, String toMonth) throws SQLException {
-		ConnectDatabase mysql = new ConnectDatabase();
-		Connection connection = mysql.getConnection();
+		//ConnectDatabase mysql = new ConnectDatabase();
+		Connection connection = ConnectDatabase.getConnection();
 
 		String query = ConnectDatabase.getQuery(province, city, fromYear, fromMonth, toYear, toMonth);
 

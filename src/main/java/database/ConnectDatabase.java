@@ -10,7 +10,7 @@ import static java.lang.Double.valueOf;
 import static java.lang.Integer.parseInt;
 
 public class ConnectDatabase {
-    private Connection connection = null;
+    public static Connection connection = null;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
@@ -91,10 +91,10 @@ public class ConnectDatabase {
 
     }
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            // Setup the connection with the DB
+            // singleton design pattern implementation
             connection = DriverManager
                     .getConnection("jdbc:mysql://localhost/nhpi?"
                             + "user=root&password=");
@@ -103,7 +103,7 @@ public class ConnectDatabase {
         } catch(Exception exception) {
             exception.printStackTrace();
         }
-        return this.connection;
+        return connection;
     }
 
     public static String getQuery(String province, String city, String fromYear,
