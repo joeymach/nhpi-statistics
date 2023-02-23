@@ -1,10 +1,3 @@
-/*************************************************
- * FALL 2022
- * EECS 3311 GUI SAMPLE CODE
- * ONLT AS A REFERENCE TO SEE THE USE OF THE jFree FRAMEWORK
- * THE CODE BELOW DOES NOT DEPICT THE DESIGN TO BE FOLLOWED 
- */
-
 package statsVisualiser.gui;
 
 import java.awt.BasicStroke;
