@@ -1,4 +1,4 @@
-# eecs3311project
+# NHPI housing statistics
 Setting up local database
 ```
 brew services start mysql 
