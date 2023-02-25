@@ -450,7 +450,6 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 		}
 		else{
 			for (String x: selectedVisualizations){
-				System.out.println(x.equals("Scatter Chart"));
 				if (x.equals("Line Chart")){
 					linePanel.setVisible(true);
 				}
