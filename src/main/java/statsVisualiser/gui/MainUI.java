@@ -8,15 +8,20 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Vector;
-import java.util.ArrayList;
+import java.util.*;
+import java.awt.FlowLayout;
+
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -33,6 +38,8 @@ import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Year;
@@ -44,7 +51,7 @@ import java.sql.*;
 import statsVisualiser.Utils;
 import database.ConnectDatabase;
 
-public class MainUI extends JFrame implements ActionListener {
+public class MainUI extends JFrame implements ActionListener, ListSelectionListener, PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -57,9 +64,40 @@ public class MainUI extends JFrame implements ActionListener {
 	JComboBox<String> toYearList;
 	JComboBox<String> toMonthList;
 	static JPanel midContainer = new JPanel();
+	JPanel chartLayout = new JPanel();
+
 
 	JButton loadData = new JButton("Load Data");
 	JButton addTimeSeriesButton = new JButton("Add Time Series");
+
+	JButton button = new JButton("Button");
+
+	String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
+	JList list = new JList(visualizations);
+	JFrame lineframe = new JFrame();
+
+	JFreeChart barchart;
+	ChartFrame barframe;
+
+	private HashMap<String, JFrame> visualizationFrames;
+	private JPanel visualizationFrame;
+	JFreeChart chart;
+	ChartPanel linePanel = new ChartPanel(chart);
+	JPanel barPanel;
+
+	JPanel lineMidContainer = new JPanel();
+	JFreeChart scatterchart;
+
+	JFrame scatterframe = new JFrame("Scatter Plot");
+	ChartPanel scatterpanel = new ChartPanel(chart);
+
+	JPanel scatterMidContainer = new JPanel();
+
+	JFreeChart piechart;
+	JFrame pieframe = new JFrame("Pie Chart");
+	ChartPanel piepanel = new ChartPanel(chart);;
+
+	int selected = 0;
 
 	XYPlot initialTimeSeriesPlot = new XYPlot();
 	JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
@@ -119,9 +157,10 @@ public class MainUI extends JFrame implements ActionListener {
 
 		midContainer.setLayout(new GridLayout(10, 1));
 		JScrollPane scrPane = new JScrollPane(midContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 		getContentPane().add(scrPane, BorderLayout.CENTER);
+
 
 		ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
 		chartPanel.setPreferredSize(new Dimension(400, 300));
@@ -135,6 +174,192 @@ public class MainUI extends JFrame implements ActionListener {
 		initialTimeSeriesPlot.setRangeAxis(new NumberAxis("NHPI % Change Monthly"));
 
 		midContainer.add(initialTimeSeriesPanel, BorderLayout.CENTER);
+
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		list.addListSelectionListener(this);
+		list.addPropertyChangeListener("selected", this);
+
+		int start = 0;
+		int end = 1;
+		list.setSelectionInterval(start, end);
+
+		chartLayout.setLayout(new GridLayout(1, 2));
+		chartLayout.setPreferredSize(new Dimension(600, 400));
+
+
+//		getContentPane().add(chartLayout, BorderLayout.CENTER);
+		midContainer.add(chartLayout);
+
+
+		visualizationFrames = new HashMap<String, JFrame>();
+		visualizationFrame = new JPanel();
+		visualizationFrame.setPreferredSize(new Dimension(600, 400));
+
+		midContainer.add(new JScrollPane(list));
+		midContainer.setSize(300, 300);
+		midContainer.setVisible(true);
+	}
+
+
+	public void linechart() throws SQLException {
+		Connection connection = ConnectDatabase.getConnection();
+
+		String linequery = "SELECT year, value FROM nhpi WHERE city=? AND province = ?";
+		PreparedStatement statement = connection.prepareStatement(linequery);
+		statement.setString(1, "Toronto");
+		statement.setString(2, "Ontario");
+		ResultSet result = statement.executeQuery();
+
+
+		ArrayList<String[]> data = new ArrayList<String[]>();
+		while (result.next()){
+			int year = result.getInt("year");
+			double value = result.getDouble("value");
+			data.add(new String[]{String.valueOf(year), String.valueOf(value)});
+		}
+
+		TimeSeriesCollection dataset = new TimeSeriesCollection();
+		TimeSeries series = new TimeSeries("New Housing Price Index for Toronto, Ontario");
+		dataset.addSeries(series);
+		for (String[] x : data) {
+			int year = Integer.parseInt(x[0]);
+			double value = Double.parseDouble(x[1]);
+			series.addOrUpdate(new Year(year), value);
+		}
+
+		chart = ChartFactory.createTimeSeriesChart(
+				"New Housing Price Index for Toronto, Ontario",
+				"Year",
+				"Price Index",
+				dataset,
+				true,
+				true,
+				false
+		);
+
+		linePanel = new ChartPanel(chart);
+		linePanel.setSize(300, 300);
+
+		chartLayout.add(linePanel);
+
+
+	}
+
+	public void barchart() throws SQLException {
+		Connection connection = ConnectDatabase.getConnection();
+
+		String barquery = "SELECT province, AVG(value) AS averageVal FROM nhpi WHERE year='2020' GROUP BY province";
+		PreparedStatement statement = connection.prepareStatement(barquery);
+		ResultSet result = statement.executeQuery();
+
+		DefaultCategoryDataset data = new DefaultCategoryDataset();
+		while (result.next()){
+			String province = result.getString("province");
+			double averageValue = result.getDouble("averageVal");
+			data.addValue(averageValue, "Average NHPI Value", province);
+		}
+
+		barchart = ChartFactory.createBarChart(
+				"Average NHPI Value by Province in 2020",
+				"Province", "Average NHPI Value",
+				data, PlotOrientation.VERTICAL,
+				true, true, false);
+
+
+//		barframe = new ChartFrame("Bar Chart", barchart);
+		barPanel = new ChartPanel(barchart);
+		barPanel.setPreferredSize(new Dimension(400, 400));
+		chartLayout.add(barPanel);
+
+//		barframe.setSize(500, 300);
+//		barframe.pack();
+//		barframe.setVisible(true);
+	}
+
+	public void scatter() throws SQLException {
+		Connection connection = ConnectDatabase.getConnection();
+
+		String scatterquery = "SELECT year, value FROM nhpi WHERE city=? AND province=? AND year BETWEEN ? AND ?";
+		PreparedStatement statement = connection.prepareStatement(scatterquery);
+		statement.setString(1, "Montreal");
+		statement.setString(2, "Quebec");
+		statement.setInt(3, 2020);
+		statement.setInt(4, 2022);
+		ResultSet result = statement.executeQuery();
+
+		ArrayList<String[]> data = new ArrayList<String[]>();
+		while (result.next()){
+			int year = result.getInt("year");
+			double value = result.getDouble("value");
+			data.add(new String[] { String.valueOf(year), String.valueOf(value) });
+		}
+
+		XYSeriesCollection dataS = new XYSeriesCollection();
+		XYSeries series = new XYSeries("New Housing Price Index for Montreal, 2020");
+		for (String[] x : data) {
+			int year = Integer.parseInt(x[0]);
+			double value = Double.parseDouble(x[1]);
+			series.add(year, value);
+		}
+		dataS.addSeries(series);
+
+		scatterchart = ChartFactory.createScatterPlot(
+				"Average NHPI Value in Montreal from 2020-2022",
+				"Year", "Value",
+				dataS, PlotOrientation.VERTICAL,
+				true, true, false);
+
+		scatterpanel = new ChartPanel(scatterchart);
+		chartLayout.add(scatterpanel);
+
+
+//		frame.getContentPane().add(scatterMidContainer);
+//		scatterframe.setSize(500, 300);
+//		scatterframe.pack();
+//		scatterframe.setVisible(true);
+	}
+
+	public void piechart() throws SQLException {
+		Connection connection = ConnectDatabase.getConnection();
+
+		String piequery = "SELECT province, SUM(value) as totalNHPI FROM nhpi GROUP BY province";
+		PreparedStatement statement = connection.prepareStatement(piequery);
+		ResultSet result = statement.executeQuery();
+
+		DefaultPieDataset dataS = new DefaultPieDataset();
+		while (result.next()){
+			String province = result.getString("province");
+			double totalNhpi = result.getDouble("totalNHPI");
+			dataS.setValue(province, totalNhpi);
+		}
+
+
+		piechart = ChartFactory.createPieChart(
+				"NHPI Values according to Province",
+				dataS,
+				true,
+				true,
+				false);
+
+		piepanel = new ChartPanel(piechart);
+		chartLayout.add(piepanel);
+//
+//		pieframe.getContentPane().add(pieMidContainer);
+//		pieframe.setSize(500, 300);
+//		pieframe.pack();
+//		pieframe.setVisible(true);
+	}
+
+	public void propertyChange(PropertyChangeEvent event){
+		updateVisualizations();
+	}
+
+	private void updateVisualizations(){
+		if (selected>2){
+			JOptionPane.showMessageDialog(list, "Only 2 visualizations can be selected. Please unselect an option before choosing.");
+			list.removeSelectionInterval(list.getMaxSelectionIndex(), list.getMaxSelectionIndex());
+		}
+
 	}
 
 	public void headerSelection(JPanel north) {
@@ -255,9 +480,86 @@ public class MainUI extends JFrame implements ActionListener {
 		dataListForTimeSeries = new ArrayList<String[][]>();
 	}
 
+
+
 	public static void main(String[] args) {
 		frame = MainUI.getInstance();
 		frame.setSize(1600, 900);
 		frame.setVisible(true);
+//		new MainUI();
 	}
+
+	public void valueChanged(ListSelectionEvent e) {
+//		updateVisualizations();
+
+		List<String> selectedVisualizations = list.getSelectedValuesList();
+		if (e.getValueIsAdjusting()) {
+			return;
+		}
+
+		int selectedNumber = list.getSelectedValuesList().size();
+		if (selectedNumber<=2) {
+			selected = selectedNumber;
+		}
+		else{
+			JOptionPane.showMessageDialog(list, "Only 2 visualizations can be selected. Please unselect an option before choosing.");
+//			list.removeSelectionInterval(list.getMaxSelectionIndex(), list.getMaxSelectionIndex());
+		}
+
+
+		if (selectedVisualizations.contains("Line Chart")){
+			try {
+				linechart();
+
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		else{
+			linePanel.setVisible(false);
+
+		}
+
+		if (selectedVisualizations.contains("Bar Chart")){
+			try {
+				barchart();
+
+
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		else{
+			barPanel.setVisible(false);
+
+		}
+
+		if (selectedVisualizations.contains("Scatter Chart")){
+			try {
+				scatter();
+
+
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		else{
+			scatterpanel.setVisible(false);
+
+		}
+
+		if (selectedVisualizations.contains("Pie Chart")){
+			try {
+				piechart();
+
+			} catch (SQLException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		else{
+			piepanel.setVisible(false);
+
+		}
+	}
+
 }
