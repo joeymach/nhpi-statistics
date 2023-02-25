@@ -51,9 +51,9 @@ import java.sql.*;
 import statsVisualiser.Utils;
 import database.ConnectDatabase;
 
-public class MainUI extends JFrame implements ActionListener, ListSelectionListener, PropertyChangeListener {
+public class MainUI extends JFrame implements ActionListener, ListSelectionListener {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -83,7 +83,7 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 	private JPanel visualizationFrame;
 	JFreeChart chart;
 	ChartPanel linePanel = new ChartPanel(chart);
-	JPanel barPanel;
+	JPanel barPanel = new ChartPanel(chart);
 
 	JPanel lineMidContainer = new JPanel();
 	JFreeChart scatterchart;
@@ -175,21 +175,29 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 
 		midContainer.add(initialTimeSeriesPanel, BorderLayout.CENTER);
 
-		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.addListSelectionListener(this);
-		list.addPropertyChangeListener("selected", this);
 
-		int start = 0;
-		int end = 1;
-		list.setSelectionInterval(start, end);
-
-		chartLayout.setLayout(new GridLayout(1, 2));
+		chartLayout.setLayout(new GridLayout(1, 4));
 		chartLayout.setPreferredSize(new Dimension(600, 400));
+		try {
+			linechart();
+			barchart();
+			scatter();
+			piechart();
+		} catch (SQLException ex) {
+			throw new RuntimeException(ex);
+		};
+		chartLayout.add(linePanel);
+		chartLayout.add(barPanel);
+		chartLayout.add(scatterpanel);
+		chartLayout.add(piepanel);
+		linePanel.setVisible(false);
+		barPanel.setVisible(false);
+		scatterpanel.setVisible(false);
+		piepanel.setVisible(false);
 
-
-//		getContentPane().add(chartLayout, BorderLayout.CENTER);
 		midContainer.add(chartLayout);
-
 
 		visualizationFrames = new HashMap<String, JFrame>();
 		visualizationFrame = new JPanel();
@@ -239,10 +247,6 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 
 		linePanel = new ChartPanel(chart);
 		linePanel.setSize(300, 300);
-
-		chartLayout.add(linePanel);
-
-
 	}
 
 	public void barchart() throws SQLException {
@@ -265,15 +269,8 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 				data, PlotOrientation.VERTICAL,
 				true, true, false);
 
-
-//		barframe = new ChartFrame("Bar Chart", barchart);
 		barPanel = new ChartPanel(barchart);
 		barPanel.setPreferredSize(new Dimension(400, 400));
-		chartLayout.add(barPanel);
-
-//		barframe.setSize(500, 300);
-//		barframe.pack();
-//		barframe.setVisible(true);
 	}
 
 	public void scatter() throws SQLException {
@@ -310,13 +307,6 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 				true, true, false);
 
 		scatterpanel = new ChartPanel(scatterchart);
-		chartLayout.add(scatterpanel);
-
-
-//		frame.getContentPane().add(scatterMidContainer);
-//		scatterframe.setSize(500, 300);
-//		scatterframe.pack();
-//		scatterframe.setVisible(true);
 	}
 
 	public void piechart() throws SQLException {
@@ -342,23 +332,6 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 				false);
 
 		piepanel = new ChartPanel(piechart);
-		chartLayout.add(piepanel);
-//
-//		pieframe.getContentPane().add(pieMidContainer);
-//		pieframe.setSize(500, 300);
-//		pieframe.pack();
-//		pieframe.setVisible(true);
-	}
-
-	public void propertyChange(PropertyChangeEvent event){
-		updateVisualizations();
-	}
-
-	private void updateVisualizations(){
-		if (selected>2){
-			JOptionPane.showMessageDialog(list, "Only 2 visualizations can be selected. Please unselect an option before choosing.");
-			list.removeSelectionInterval(list.getMaxSelectionIndex(), list.getMaxSelectionIndex());
-		}
 
 	}
 
@@ -427,7 +400,7 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 	}
 
 	private String[][] getDataFromDatabase(String province, String city, String fromYear,
-									 String fromMonth, String toYear, String toMonth) throws SQLException {
+										   String fromMonth, String toYear, String toMonth) throws SQLException {
 		//ConnectDatabase mysql = new ConnectDatabase();
 		Connection connection = ConnectDatabase.getConnection();
 
@@ -486,80 +459,39 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 		frame = MainUI.getInstance();
 		frame.setSize(1600, 900);
 		frame.setVisible(true);
-//		new MainUI();
 	}
 
 	public void valueChanged(ListSelectionEvent e) {
-//		updateVisualizations();
+		linePanel.setVisible(false);
+		barPanel.setVisible(false);
+		scatterpanel.setVisible(false);
+		piepanel.setVisible(false);
 
 		List<String> selectedVisualizations = list.getSelectedValuesList();
-		if (e.getValueIsAdjusting()) {
-			return;
-		}
 
 		int selectedNumber = list.getSelectedValuesList().size();
-		if (selectedNumber<=2) {
-			selected = selectedNumber;
-		}
-		else{
+
+		if (selectedNumber>2) {
 			JOptionPane.showMessageDialog(list, "Only 2 visualizations can be selected. Please unselect an option before choosing.");
-//			list.removeSelectionInterval(list.getMaxSelectionIndex(), list.getMaxSelectionIndex());
-		}
-
-
-		if (selectedVisualizations.contains("Line Chart")){
-			try {
-				linechart();
-
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
 		}
 		else{
-			linePanel.setVisible(false);
+			for (String x: selectedVisualizations){
+				System.out.println(x.equals("Scatter Chart"));
+				if (x.equals("Line Chart")){
+					linePanel.setVisible(true);
+				}
+				if (x.equals("Bar Chart")){
+					barPanel.setVisible(true);
 
-		}
+				}
+				if (x.equals("Scatter Chart")){
+					scatterpanel.setVisible(true);
+				}
+				if (x.equals("Pie Chart")){
+					piepanel.setVisible(true);
+				}
 
-		if (selectedVisualizations.contains("Bar Chart")){
-			try {
-				barchart();
-
-
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
 			}
-		}
-		else{
-			barPanel.setVisible(false);
-
-		}
-
-		if (selectedVisualizations.contains("Scatter Chart")){
-			try {
-				scatter();
-
-
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		else{
-			scatterpanel.setVisible(false);
-
-		}
-
-		if (selectedVisualizations.contains("Pie Chart")){
-			try {
-				piechart();
-
-			} catch (SQLException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		else{
-			piepanel.setVisible(false);
-
 		}
 	}
-
 }
