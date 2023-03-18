@@ -82,27 +82,20 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 	JPanel chartLayout = new JPanel();
 	String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
 	JList list = new JList(visualizations);
-	JFrame lineframe = new JFrame();
 
 	JFreeChart barchart;
-	ChartFrame barframe;
 
-	private HashMap<String, JFrame> visualizationFrames;
 	private JPanel visualizationFrame;
 	JFreeChart chart;
 	ChartPanel linePanel = new ChartPanel(chart);
 	JPanel barPanel = new ChartPanel(chart);
 
-	JPanel lineMidContainer = new JPanel();
 	JFreeChart scatterchart;
 
-	JFrame scatterframe = new JFrame("Scatter Plot");
 	ChartPanel scatterpanel = new ChartPanel(chart);
 
-	JPanel scatterMidContainer = new JPanel();
 
 	JFreeChart piechart;
-	JFrame pieframe = new JFrame("Pie Chart");
 	ChartPanel piepanel = new ChartPanel(chart);;
 
 	private static MainUI instance;
@@ -169,7 +162,6 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 
 		midContainer.add(chartLayout);
 
-		visualizationFrames = new HashMap<String, JFrame>();
 		visualizationFrame = new JPanel();
 		visualizationFrame.setPreferredSize(new Dimension(600, 400));
 
@@ -422,7 +414,7 @@ public class MainUI extends JFrame implements ActionListener, ListSelectionListe
 		for(String[][] dataset : dataListForTimeSeries) {
 			TimeSeries series = new TimeSeries("");
 			for(String[] row : dataset) {
-				series.addOrUpdate(new Year(Integer.parseInt(row[0])), Double.parseDouble(row[4]));
+				series.addOrUpdate(new Month(Integer.parseInt(row[1]), Integer.parseInt(row[0])), Double.parseDouble(row[4]));
 			}
 			initialTimeSeriesDataset.addSeries(series);
 		}
