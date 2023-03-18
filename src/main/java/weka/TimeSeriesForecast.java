@@ -35,7 +35,7 @@ public class TimeSeriesForecast {
 
         forecaster.getTSLagMaker().setTimeStampField("Date");
         forecaster.getTSLagMaker().setMinLag(1);
-        forecaster.getTSLagMaker().setMaxLag(12);
+        forecaster.getTSLagMaker().setMaxLag(2);
 
         forecaster.getTSLagMaker().setAddMonthOfYear(true);
         forecaster.getTSLagMaker().setAddQuarterOfYear(true);
