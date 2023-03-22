@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DescriptiveStats {
-
-
     public static List<Double> getDescriptiveStats(List<Double> nhpiLoadedValues) {
         DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
         nhpiLoadedValues.forEach(descriptiveStatistics::addValue);
@@ -19,11 +17,11 @@ public class DescriptiveStats {
         double max = descriptiveStatistics.getMax();
 
         List<Double> descriptiveStats = new ArrayList<>();
-        descriptiveStats.add(average);
-        descriptiveStats.add(median);
-        descriptiveStats.add(standardDeviation);
-        descriptiveStats.add(min);
-        descriptiveStats.add(max);
+        descriptiveStats.add(Math.round(average * 10.0) / 10.0);
+        descriptiveStats.add(Math.round(median * 10.0) / 10.0);
+        descriptiveStats.add(Math.round(standardDeviation * 10.0) / 10.0);
+        descriptiveStats.add(Math.round(min * 10.0) / 10.0);
+        descriptiveStats.add(Math.round(max * 10.0) / 10.0);
 
         return descriptiveStats;
     }
