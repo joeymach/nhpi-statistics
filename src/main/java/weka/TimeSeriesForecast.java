@@ -27,17 +27,6 @@ import java.util.Map;
 
 public class TimeSeriesForecast {
     public static void main(String[] args) throws Exception {
-
-//        // Convert CSV data into ARFF data
-//        CSVLoader loader = new CSVLoader();
-//        loader.setSource(new File("nhpi_avg_date.csv"));
-//        Instances data = loader.getDataSet();
-//
-//        ArffSaver saver = new ArffSaver();
-//        saver.setInstances(data);
-//        saver.setFile(new File("nhpi_avg_date.arff"));
-//        saver.writeBatch();
-
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date.arff")));
 
         WekaForecaster forecaster = new WekaForecaster();
