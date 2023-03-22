@@ -2,18 +2,12 @@ package database;
 
 import java.io.*;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.Date;
 
 import static java.lang.Double.parseDouble;
-import static java.lang.Double.valueOf;
 import static java.lang.Integer.parseInt;
 
 public class ConnectDatabase {
     public static Connection connection = null;
-    private Statement statement = null;
-    private PreparedStatement preparedStatement = null;
-    private ResultSet resultSet = null;
 
     public void establishConnection() throws Exception {
         int batchSize=20;
@@ -31,14 +25,12 @@ public class ConnectDatabase {
 
             String sql="insert into nhpi(year,month,city,province,value) values(?,?,?,?,?)";
 
-            PreparedStatement statement=connection.prepareStatement(sql);
+            PreparedStatement statement = connection.prepareStatement(sql);
 
-            BufferedReader lineReader=new BufferedReader(new FileReader(filePath));
+            BufferedReader lineReader = new BufferedReader(new FileReader(filePath));
 
             String lineText=null;
             int count=0;
-
-            int length = 0;
 
             lineReader.readLine();
             while ((lineText=lineReader.readLine())!=null){
