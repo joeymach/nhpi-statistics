@@ -1,7 +1,7 @@
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import statsVisualiser.Utils;
+import statsVisualiser.HeaderParameterValues;
 
 import java.util.Arrays;
 import java.util.Vector;
@@ -22,7 +22,7 @@ public class UtilsTest {
 
         Vector<String> citiesNamesExpected = new Vector<String>(Arrays.asList(citiesArray));
 
-        Vector<String> citiesNames = Utils.getCities();
+        Vector<String> citiesNames = HeaderParameterValues.getCities();
 
         for(int i = 0; i < citiesNamesExpected.size(); i++) {
             assertEquals(citiesNames.get(i), citiesNamesExpected.get(i));
@@ -40,7 +40,7 @@ public class UtilsTest {
 
         Vector<String> provincesExpected = new Vector<String>(Arrays.asList(provincesArray));
 
-        Vector<String> provinces = Utils.getProvinces();
+        Vector<String> provinces = HeaderParameterValues.getProvinces();
 
         for(int i = 0; i < provincesExpected.size(); i++) {
             assertEquals(provinces.get(i), provincesExpected.get(i));
