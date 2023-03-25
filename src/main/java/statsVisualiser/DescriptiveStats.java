@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DescriptiveStats {
-    public static List<Double> getDescriptiveStats(List<Double> nhpiLoadedValues) {
+    public static String[][] getDescriptiveStats(String[][] rawData) {
         DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
+        List<Double> nhpiLoadedValues = DescriptiveStats.sanitizeNhpiInput(rawData);
         nhpiLoadedValues.forEach(descriptiveStatistics::addValue);
 
         double average = descriptiveStatistics.getMean();
@@ -16,13 +17,22 @@ public class DescriptiveStats {
         double min = descriptiveStatistics.getMin();
         double max = descriptiveStatistics.getMax();
 
-        List<Double> descriptiveStats = new ArrayList<>();
-        descriptiveStats.add(Math.round(average * 10.0) / 10.0);
-        descriptiveStats.add(Math.round(median * 10.0) / 10.0);
-        descriptiveStats.add(Math.round(standardDeviation * 10.0) / 10.0);
-        descriptiveStats.add(Math.round(min * 10.0) / 10.0);
-        descriptiveStats.add(Math.round(max * 10.0) / 10.0);
+        String[][] descriptiveStats = new String[5][2];
+
+        descriptiveStats[0] = new String[]{"Average", Double.toString(Math.round(average * 10.0) / 10.0)};
+        descriptiveStats[1] = new String[]{"Median", Double.toString(Math.round(median * 10.0) / 10.0)};
+        descriptiveStats[2] = new String[]{"Standard Deviation", Double.toString(Math.round(standardDeviation * 10.0) / 10.0)};
+        descriptiveStats[3] = new String[]{"Min", Double.toString(Math.round(min * 10.0) / 10.0)};
+        descriptiveStats[4] = new String[]{"Max", Double.toString(Math.round(max * 10.0) / 10.0)};
 
         return descriptiveStats;
+    }
+
+    public static List<Double> sanitizeNhpiInput(String[][] rawData) {
+        List<Double> nhpiLoadedValues = new ArrayList<>();
+        for(String[] row : rawData) {
+            nhpiLoadedValues.add(Double.parseDouble(row[4]));
+        }
+        return nhpiLoadedValues;
     }
 }
