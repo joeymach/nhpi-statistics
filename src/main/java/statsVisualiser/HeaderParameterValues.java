@@ -3,7 +3,7 @@ package statsVisualiser;
 import java.util.Arrays;
 import java.util.Vector;
 
-public class Utils {
+public class HeaderParameterValues {
     public static Vector<String> getCities() {
         String[] citiesArray = {"All", "St. John's", "Charlottetown", "Halifax",
                 "Saint John, Fredericton, and Moncton", "Québec", "Sherbrooke", "Trois-Rivières", "Montréal",
