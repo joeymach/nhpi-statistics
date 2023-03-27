@@ -51,17 +51,11 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 	// Panels
 	JPanel loadedDataPane = new JPanel();
+	static JPanel timeSeriesPanel = new JPanel();
 	JPanel visualizationPanel = new JPanel();
-	JPanel timeSeriesPanel = new JPanel();
 
 	// UI instance variables
 	UserParametersUI userParametersUI;
-
-	// Other time series (to be refactored)
-	TimeSeriesCollection initialTimeSeriesDataset = new TimeSeriesCollection();
-
-	ArrayList<String[][]> dataList = new ArrayList<String[][]>();
-	ArrayList<String[][]> dataListForTimeSeries = new ArrayList<String[][]>();
 
 	//Visualizations variables
 	JPanel chartLayout = new JPanel();
@@ -84,6 +78,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 	// MainUI instance
 	private static MainUI instance;
+	public static JFrame frame;
 
 	public static MainUI getInstance() {
 		if (instance == null)
@@ -91,8 +86,11 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		return instance;
 	}
 
+	public static JPanel getTimeSeriesPanel() {
+		return timeSeriesPanel;
+	}
+
 	// MainUI frame
-	public static JFrame frame = MainUI.getInstance();
 
 	public MainUI() {
 		// Set window title
@@ -112,7 +110,10 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		// 1st panel: raw data table or descriptive stats
 		midContainer.add(loadedDataPane, BorderLayout.AFTER_LINE_ENDS);
 
-		// 2nd Panel: Visualizations
+		// 2rd Panel: Time series
+		midContainer.add(timeSeriesPanel, BorderLayout.CENTER);
+
+		// 3nd Panel: Visualizations
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setPreferredSize(new Dimension(200, 200));
 		list.addListSelectionListener(this);
@@ -142,25 +143,6 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 		midContainer.add(visualizationPanel);
 
-		// 3rd Panel: Time series
-		XYPlot initialTimeSeriesPlot = new XYPlot();
-		JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
-				new Font("Serif", java.awt.Font.BOLD, 18), initialTimeSeriesPlot, true);
-		ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
-		chartPanel.setPreferredSize(new Dimension(400, 300));
-		chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-		chartPanel.setBackground(Color.white);
-		timeSeriesPanel.add(chartPanel);
-
-		initialTimeSeriesPlot.setDataset(0, initialTimeSeriesDataset);
-		initialTimeSeriesPlot.setRenderer(0, new XYSplineRenderer());
-		DateAxis domainAxis = new DateAxis("Year");
-		initialTimeSeriesPlot.setDomainAxis(domainAxis);
-		initialTimeSeriesPlot.setRangeAxis(new NumberAxis("NHPI % Change Monthly"));
-
-		midContainer.add(timeSeriesPanel, BorderLayout.CENTER);
-
-		midContainer.setSize(300, 300);
 		midContainer.setVisible(true);
 	}
 
@@ -299,7 +281,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		int selectedNumber = list.getSelectedValuesList().size();
 
 		if (selectedNumber>2) {
-			JOptionPane.showMessageDialog(list, "Only 2 visualizations can be selected. Please unselect an option before choosing.");
+			JOptionPane.showMessageDialog(MainUI.getInstance(), "Only 2 visualizations can be selected. Please unselect an option before choosing.");
 		}
 		else{
 			for (String x: selectedVisualizations){
