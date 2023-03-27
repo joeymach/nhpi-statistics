@@ -111,7 +111,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		midContainer.add(loadedDataPane, BorderLayout.AFTER_LINE_ENDS);
 
 		// 2rd Panel: Time series
-		midContainer.add(timeSeriesPanel, BorderLayout.CENTER);
+		midContainer.add(timeSeriesPanel, BorderLayout.AFTER_LINE_ENDS);
 
 		// 3nd Panel: Visualizations
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
