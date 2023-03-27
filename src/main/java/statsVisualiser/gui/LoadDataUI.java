@@ -5,6 +5,8 @@ import statsVisualiser.DescriptiveStats;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,8 +51,12 @@ public class LoadDataUI implements ActionListener {
 
         JTable table = new JTable(model);
 
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        rawDataTable = new JScrollPane(table);
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(2).setPreferredWidth(200);
+        columnModel.getColumn(3).setPreferredWidth(200);
+
+        rawDataTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         rawDataTable.setPreferredSize(new Dimension(1000, 600));
         rawDataTable.setBorder(BorderFactory.createTitledBorder(
@@ -61,7 +67,7 @@ public class LoadDataUI implements ActionListener {
     public void createTableForDescData() {
         String[] columnNames = {"Data Description", "Value"};
 
-        String[][] descData = DescriptiveStats.getDescriptiveStats(rawData);
+        descData = DescriptiveStats.getDescriptiveStats(rawData);
         DefaultTableModel model = new DefaultTableModel(descData, columnNames);
 
         JTable table = new JTable(model);
