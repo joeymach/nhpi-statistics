@@ -125,10 +125,11 @@ public class UserParametersUI extends JFrame implements ActionListener {
             throw new RuntimeException(ex);
         }
 
-        if (data[0][0].equals("Invalid")) {
+        if (data.length == 0 || data[0][0].equals("Invalid")) {
             // Error alert window shown when selection parameters are invalid
             JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
-        } else {
+        }
+        else {
             loadDataUI = new LoadDataUI(data);
             JPanel loadDataPanelTemp = loadDataUI.getLoadDataPanel();
             loadedDataPanel.removeAll();
