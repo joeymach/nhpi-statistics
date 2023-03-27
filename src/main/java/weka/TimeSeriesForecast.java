@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 public class TimeSeriesForecast {
+    static WekaForecaster forecaster;
+
     public static void main(String[] args) throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date.arff")));
 
@@ -64,12 +66,12 @@ public class TimeSeriesForecast {
     Output: HashMap with 1 element containing (key, value) pair of (WekaForecaster, futureForecastPredictions)
     Gets the forecaster model and the future forecasts for time series
     */
-    public static Map<WekaForecaster, Double> getForecasts(String dateToForecastFrom, int numMonthsToForecast,
+    public static List<Double> getForecasts(String dateToForecastFrom, int numMonthsToForecast,
                                                            int epoch, int iteration, int convergenceThreshold)
                                                            throws Exception {
         Instances nhpiData = TimeSeriesForecast.getPrimingData(dateToForecastFrom);
 
-        WekaForecaster forecaster = new WekaForecaster();
+        forecaster = new WekaForecaster();
         forecaster.setFieldsToForecast("Value");
         MultilayerPerceptron mlp = new MultilayerPerceptron();
         mlp.setTrainingTime(epoch); // set epoch
@@ -90,16 +92,16 @@ public class TimeSeriesForecast {
 
         List<List<NumericPrediction>> forecast = forecaster.forecast(numMonthsToForecast, System.out);
 
+        List<Double> forecastResult = new ArrayList<>();
+
         for (int i = 0; i < numMonthsToForecast; i++) {
             List<NumericPrediction> predsAtStep = forecast.get(i);
             NumericPrediction predForTarget = predsAtStep.get(0);
-            System.out.print("" + predForTarget.predicted() + " ");
-            System.out.println();
+            forecastResult.add(Math.round(predForTarget.predicted() * 100.00) / 100.00);
+            System.out.println(predForTarget.predicted());
         }
 
-        Map<WekaForecaster, Double> result = new HashMap<>();
-        result.put(forecaster, 1.0);
-        return result;
+        return forecastResult;
     }
 
     /*
@@ -107,7 +109,7 @@ public class TimeSeriesForecast {
     Output: List<Double> with 3 elements which correspond to values for model accuracy, mean error, model fitness
     Gets forecaster evaluation stats: accuracy, mean error, model fitness
     */
-    public static List<Double> getEvaluationStats(WekaForecaster forecaster) throws Exception {
+    public static List<Double> getEvaluationStats() throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_train.arff")));
         Instances nhpiTest = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_test.arff")));
 
@@ -144,6 +146,10 @@ public class TimeSeriesForecast {
         return evaluationResult;
     }
 
+    /*
+    Input: toDate in format String "YYYY-MM-DD"
+    Output: data in dataset up until toDate
+    */
     public static Instances getPrimingData(String toDate) throws Exception {
         long monthsBetween = ChronoUnit.MONTHS.between(
                 YearMonth.from(LocalDate.parse(toDate)),
@@ -154,7 +160,7 @@ public class TimeSeriesForecast {
 
         Instances nhpiData = new Instances(new BufferedReader(new FileReader("nhpi_avg_date.arff")));
 
-        // filter data set after input date
+        // filter data set to all data points dated before input date
         long startIndex = nhpiData.size() - monthsBetween;
         for (int i = nhpiData.size() - 1; i >= startIndex; i--) {
             nhpiData.remove(i);
