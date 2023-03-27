@@ -17,31 +17,30 @@ import java.awt.event.ActionListener;
 public class UserParametersUI extends JFrame implements ActionListener {
 
     // Header selection global variables
-    JComboBox<String> provincesList;
-    JComboBox<String> cityList;
-    JComboBox<String> fromYearList;
-    JComboBox<String> fromMonthList;
-    JComboBox<String> toYearList;
-    JComboBox<String> toMonthList;
+    static JComboBox<String> provincesList;
+    static JComboBox<String> cityList;
+    static JComboBox<String> fromYearList;
+    static JComboBox<String> fromMonthList;
+    static JComboBox<String> toYearList;
+    static JComboBox<String> toMonthList;
 
     // Header button global variables
     JButton addTimeSeriesButton;
     JButton loadDataButton;
 
     // Selection variables
-    Map<String, String> loadDataParams = new HashMap<>();
-    ArrayList<HashMap<String, String>> timeSeriesParams = new ArrayList<>();
+    static Map<String, String> loadDataParams = new HashMap<>();
 
     // Panel UIs
     JPanel headerSelectionPanel;
-    JPanel loadedDataPane;
+    JPanel loadedDataPanel;
 
     // Constructor UIs
     LoadDataUI loadDataUI;
 
-    public UserParametersUI(JPanel loadedDataPane) {
+    public UserParametersUI(JPanel loadedDataPanel) {
         this.headerSelectionPanel = this.headerSelection();
-        this.loadedDataPane = loadedDataPane;
+        this.loadedDataPanel = loadedDataPanel;
     }
 
     public JPanel headerSelection() {
@@ -102,103 +101,61 @@ public class UserParametersUI extends JFrame implements ActionListener {
         return this.headerSelectionPanel;
     }
 
-    public void setLoadDataParams(String province, String city, String fromYear,
+    public static void setLoadDataParams(String province, String city, String fromYear,
                                   String fromMonth, String toYear, String toMonth) {
-        this.loadDataParams.put("province", province);
-        this.loadDataParams.put("city", city);
-        this.loadDataParams.put("fromYear", fromYear);
-        this.loadDataParams.put("fromMonth", fromMonth);
-        this.loadDataParams.put("toYear", toYear);
-        this.loadDataParams.put("toMonth", toMonth);
+        UserParametersUI.loadDataParams.put("province", province);
+        UserParametersUI.loadDataParams.put("city", city);
+        UserParametersUI.loadDataParams.put("fromYear", fromYear);
+        UserParametersUI.loadDataParams.put("fromMonth", fromMonth);
+        UserParametersUI.loadDataParams.put("toYear", toYear);
+        UserParametersUI.loadDataParams.put("toMonth", toMonth);
     }
 
-    public void addTimeSeriesParams(String province, String city, String fromYear,
-                                    String fromMonth, String toYear, String toMonth) {
-        HashMap<String, String> timeSeriesParam = new HashMap<>();
-        timeSeriesParam.put("province", province);
-        timeSeriesParam.put("city", city);
-        timeSeriesParam.put("fromYear", fromYear);
-        timeSeriesParam.put("fromMonth", fromMonth);
-        timeSeriesParam.put("toYear", toYear);
-        timeSeriesParam.put("toMonth", toMonth);
-        this.timeSeriesParams.add(timeSeriesParam);
+    public void loadDataUIToFrame() {
+        String[][] data = new String[1][1];
+        try {
+            data = DataQuery.getDataFromDatabase(loadDataParams.get("province"),
+                    loadDataParams.get("city"),
+                    loadDataParams.get("fromYear"),
+                    loadDataParams.get("fromMonth"),
+                    loadDataParams.get("toYear"),
+                    loadDataParams.get("toMonth"));
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        if (data[0][0].equals("Invalid")) {
+            // Error alert window shown when selection parameters are invalid
+            JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
+        } else {
+            loadDataUI = new LoadDataUI(data);
+            JPanel loadDataPanelTemp = loadDataUI.getLoadDataPanel();
+            loadedDataPanel.removeAll();
+            loadedDataPanel.add(loadDataPanelTemp);
+            MainUI.getInstance().setVisible(true);
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
-        String[][] data = new String[0][];
-
         if (e.getSource() == addTimeSeriesButton) {
-            this.addTimeSeriesParams(provincesList.getSelectedItem().toString(),
+            TimeSeriesUI.addTimeSeries(provincesList.getSelectedItem().toString(),
                     cityList.getSelectedItem().toString(),
                     fromYearList.getSelectedItem().toString(),
                     fromMonthList.getSelectedItem().toString(),
                     toYearList.getSelectedItem().toString(),
                     toMonthList.getSelectedItem().toString());
-
-            try {
-                data = DataQuery.getDataFromDatabase(provincesList.getSelectedItem().toString(),
-                        cityList.getSelectedItem().toString(),
-                        fromYearList.getSelectedItem().toString(),
-                        fromMonthList.getSelectedItem().toString(),
-                        toYearList.getSelectedItem().toString(),
-                        toMonthList.getSelectedItem().toString());
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
         }
 
         if (e.getSource() == loadDataButton) {
-            this.setLoadDataParams(provincesList.getSelectedItem().toString(),
+            UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
                     cityList.getSelectedItem().toString(),
                     fromYearList.getSelectedItem().toString(),
                     fromMonthList.getSelectedItem().toString(),
                     toYearList.getSelectedItem().toString(),
                     toMonthList.getSelectedItem().toString());
 
-
-            try {
-                data = DataQuery.getDataFromDatabase(provincesList.getSelectedItem().toString(),
-                        cityList.getSelectedItem().toString(),
-                        fromYearList.getSelectedItem().toString(),
-                        fromMonthList.getSelectedItem().toString(),
-                        toYearList.getSelectedItem().toString(),
-                        toMonthList.getSelectedItem().toString());
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            loadDataUI = new LoadDataUI(data);
-            JPanel loadDataPanel = loadDataUI.getLoadDataPanel();
-
-            loadedDataPane.removeAll();
-            loadedDataPane.add(loadDataPanel);
-            MainUI.getInstance().setVisible(true);
+            loadDataUIToFrame();
         }
-
-        /*
-        try {
-            data = getDataFromDatabase(provincesList.getSelectedItem().toString(),
-                    cityList.getSelectedItem().toString(),
-                    fromYearList.getSelectedItem().toString(),
-                    fromMonthList.getSelectedItem().toString(),
-                    toYearList.getSelectedItem().toString(),
-                    toMonthList.getSelectedItem().toString());
-        } catch(Exception exception){
-            exception.printStackTrace();
-        }
-        dataList.add(data);
-        dataListForTimeSeries.add(data);
-
-        if (e.getSource() == loadData) {
-            createTableForDataLoading(midContainer, data);
-            frame.setVisible(true);
-        }
-
-        if (e.getSource() == addTimeSeriesButton) {
-            createTimeSeriesForData();
-            frame.setVisible(true);
-        }
-         */
     }
 }
