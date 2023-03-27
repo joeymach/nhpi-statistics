@@ -58,9 +58,16 @@ public class LoadDataUI implements ActionListener {
         rawDataTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
+        String title = "Raw Data Table: Province: " + UserParametersUI.loadDataParams.get("province") +
+                ", City: " + UserParametersUI.loadDataParams.get("city") +
+                ", fromYear: " + UserParametersUI.loadDataParams.get("fromYear") +
+                ", fromMonth: " + UserParametersUI.loadDataParams.get("fromMonth") +
+                ", toYear: " + UserParametersUI.loadDataParams.get("toYear") +
+                ", toMonth: " + UserParametersUI.loadDataParams.get("toMonth");
+
         rawDataTable.setPreferredSize(new Dimension(1000, 600));
         rawDataTable.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Raw Loaded Data Table with province:all, city:all, toyear=1203, tomonth=123, fromYear=2342, frommonth=123123",
+                BorderFactory.createEtchedBorder(), title,
                 TitledBorder.CENTER, TitledBorder.TOP));
     }
 
@@ -75,9 +82,16 @@ public class LoadDataUI implements ActionListener {
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         descriptiveTable = new JScrollPane(table);
 
+        String title = "Descriptive Data Table: Province: " + UserParametersUI.loadDataParams.get("province") +
+                ", City: " + UserParametersUI.loadDataParams.get("city") +
+                ", fromYear: " + UserParametersUI.loadDataParams.get("fromYear") +
+                ", fromMonth: " + UserParametersUI.loadDataParams.get("fromMonth") +
+                ", toYear: " + UserParametersUI.loadDataParams.get("toYear") +
+                ", toMonth: " + UserParametersUI.loadDataParams.get("toMonth");
+
         descriptiveTable.setPreferredSize(new Dimension(1000, 600));
         descriptiveTable.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Desc Loaded Data Table with province:all, city:all, toyear=1203, tomonth=123, fromYear=2342, frommonth=123123",
+                BorderFactory.createEtchedBorder(), title,
                 TitledBorder.CENTER, TitledBorder.TOP));
     }
 
