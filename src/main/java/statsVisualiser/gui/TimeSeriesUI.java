@@ -12,6 +12,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import statsVisualiser.DataQuery;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 
 public class TimeSeriesUI {
 
+    static JPanel timeSeriesUIPanel = new JPanel();
     static ArrayList<HashMap<String, String>> timeSeriesParams = new ArrayList<>();
 
     // Data variables
@@ -46,13 +48,25 @@ public class TimeSeriesUI {
             JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
         } else {
             addTimeSeriesToDataset(data);
-
-            ChartPanel chartPanel = getTimeSeriesChartPanel();
-            MainUI.getTimeSeriesPanel().removeAll();
-            MainUI.getTimeSeriesPanel().add(chartPanel);
-            MainUI.getInstance().setVisible(true);
+            renderTimeSeriesUIPanel();
         }
 
+    }
+
+    public static void renderTimeSeriesUIPanel() {
+        timeSeriesUIPanel.removeAll();
+
+        JScrollPane timeSeriesLegend = getTimeSeriesLegend();
+        timeSeriesUIPanel.add(timeSeriesLegend);
+
+        ChartPanel chartPanel = getTimeSeriesChartPanel();
+        timeSeriesUIPanel.add(chartPanel);
+
+        timeSeriesUIPanel.setLayout(new BoxLayout(timeSeriesUIPanel, BoxLayout.Y_AXIS));
+
+        MainUI.getTimeSeriesPanel().removeAll();
+        MainUI.getTimeSeriesPanel().add(timeSeriesUIPanel);
+        MainUI.getInstance().setVisible(true);
     }
 
     public static void addTimeSeriesParams(String province, String city, String fromYear,
@@ -82,7 +96,7 @@ public class TimeSeriesUI {
         JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
                 new Font("Serif", java.awt.Font.BOLD, 18), timeSeriesPlot, true);
         ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
-        chartPanel.setPreferredSize(new Dimension(1000, 600));
+        chartPanel.setPreferredSize(new Dimension(1000, 500));
         chartPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         chartPanel.setBackground(Color.white);
         MainUI.getTimeSeriesPanel().add(chartPanel);
@@ -94,5 +108,33 @@ public class TimeSeriesUI {
         timeSeriesPlot.setRangeAxis(new NumberAxis("NHPI % Change Monthly"));
 
         return chartPanel;
+    }
+
+    public static JScrollPane getTimeSeriesLegend() {
+        String[] columnNames = {"Time Series Legend #", "Parameters inputted"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+
+        int legendNum = 1;
+        for (HashMap<String, String> timeSeriesParam : timeSeriesParams) {
+            String paramString = "Province: " + timeSeriesParam.get("province") +
+                    ", City: " + timeSeriesParam.get("city") +
+                    ", fromYear: " + timeSeriesParam.get("fromYear") +
+                    ", fromMonth: " + timeSeriesParam.get("fromMonth") +
+                    ", toYear: " + timeSeriesParam.get("toYear") +
+                    ", toMonth: " + timeSeriesParam.get("toMonth");
+            model.addRow(new String[]{Integer.toString(legendNum), paramString});
+            legendNum += 1;
+        }
+
+        JTable timeSeriesLegendTable = new JTable(model);
+
+        timeSeriesLegendTable.setPreferredScrollableViewportSize(new Dimension(1000, 80));
+        timeSeriesLegendTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        timeSeriesLegendTable.getColumnModel().getColumn(1).setPreferredWidth(850);
+
+        JScrollPane scrollPane = new JScrollPane(timeSeriesLegendTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        return scrollPane;
     }
 }
