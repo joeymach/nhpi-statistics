@@ -5,22 +5,29 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.Year;
 import statsVisualiser.DataQuery;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class TimeSeriesUI {
 
     static JPanel timeSeriesUIPanel = new JPanel();
+    static XYPlot timeSeriesPlot;
+    static ChartPanel chartPanel;
     static ArrayList<HashMap<String, String>> timeSeriesParams = new ArrayList<>();
 
     // Data variables
@@ -50,7 +57,6 @@ public class TimeSeriesUI {
             addTimeSeriesToDataset(data);
             renderTimeSeriesUIPanel();
         }
-
     }
 
     public static void renderTimeSeriesUIPanel() {
@@ -59,8 +65,12 @@ public class TimeSeriesUI {
         JScrollPane timeSeriesLegend = getTimeSeriesLegend();
         timeSeriesUIPanel.add(timeSeriesLegend);
 
-        ChartPanel chartPanel = getTimeSeriesChartPanel();
+        if(chartPanel == null) {
+            chartPanel = getTimeSeriesChartPanel();
+        }
         timeSeriesUIPanel.add(chartPanel);
+
+        timeSeriesUIPanel.add(ForecastSelectionUI.getForecastMenuPanel());
 
         timeSeriesUIPanel.setLayout(new BoxLayout(timeSeriesUIPanel, BoxLayout.Y_AXIS));
 
@@ -92,7 +102,7 @@ public class TimeSeriesUI {
 
 
      public static ChartPanel getTimeSeriesChartPanel() {
-        XYPlot timeSeriesPlot = new XYPlot();
+        timeSeriesPlot = new XYPlot();
         JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
                 new Font("Serif", java.awt.Font.BOLD, 18), timeSeriesPlot, true);
         ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
@@ -136,5 +146,17 @@ public class TimeSeriesUI {
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         return scrollPane;
+    }
+
+    public static TimeSeriesCollection getTimeSeriesDataset() {
+        return timeSeriesDataset;
+    }
+
+    public static int getNumOfTimeSeries() {
+        return numOfTimeSeries;
+    }
+
+    public static ArrayList<HashMap<String, String>> getTimeSeriesParams() {
+        return timeSeriesParams;
     }
 }

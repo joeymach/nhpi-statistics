@@ -51,8 +51,9 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 	// Panels
 	JPanel loadedDataPane = new JPanel();
-	static JPanel timeSeriesPanel = new JPanel();
 	JPanel visualizationPanel = new JPanel();
+	static JPanel timeSeriesPanel = new JPanel();
+	static JPanel forecastPanel = new JPanel();
 
 	// UI instance variables
 	UserParametersUI userParametersUI;
@@ -90,7 +91,9 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		return timeSeriesPanel;
 	}
 
-	// MainUI frame
+	public static JPanel getForecastPanel() {
+		return forecastPanel;
+	}
 
 	public MainUI() {
 		// Set window title
@@ -102,18 +105,21 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		getContentPane().add(headerSelectionPanel, BorderLayout.NORTH);
 
 		// Setting up wrapper mid-container for the below panels
-		midContainer.setLayout(new GridLayout(4, 1));
+		//midContainer.setLayout(new BorderLayout());
 		JScrollPane mainScrollPane = new JScrollPane(midContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		getContentPane().add(mainScrollPane, BorderLayout.CENTER);
 
 		// 1st panel: raw data table or descriptive stats
-		midContainer.add(loadedDataPane, BorderLayout.AFTER_LINE_ENDS);
+		midContainer.add(loadedDataPane);
 
-		// 2rd Panel: Time series
-		midContainer.add(timeSeriesPanel, BorderLayout.AFTER_LINE_ENDS);
+		// 2nd Panel: Time series
+		midContainer.add(timeSeriesPanel);
 
-		// 3nd Panel: Visualizations
+		// 3rd Panel: Forecast
+		midContainer.add(forecastPanel);
+
+		// 4nd Panel: Visualizations
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setPreferredSize(new Dimension(200, 200));
 		list.addListSelectionListener(this);
@@ -143,6 +149,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 		midContainer.add(visualizationPanel);
 
+		midContainer.setLayout(new BoxLayout(midContainer, BoxLayout.Y_AXIS));
 		midContainer.setVisible(true);
 	}
 

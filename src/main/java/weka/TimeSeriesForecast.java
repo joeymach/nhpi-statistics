@@ -94,6 +94,7 @@ public class TimeSeriesForecast {
 
         List<Double> forecastResult = new ArrayList<>();
 
+        System.out.println("Forecast Results:");
         for (int i = 0; i < numMonthsToForecast; i++) {
             List<NumericPrediction> predsAtStep = forecast.get(i);
             NumericPrediction predForTarget = predsAtStep.get(0);
@@ -109,7 +110,7 @@ public class TimeSeriesForecast {
     Output: List<Double> with 3 elements which correspond to values for model accuracy, mean error, model fitness
     Gets forecaster evaluation stats: accuracy, mean error, model fitness
     */
-    public static List<Double> getEvaluationStats() throws Exception {
+    public static String[][] getEvaluationStats() throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_train.arff")));
         Instances nhpiTest = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_test.arff")));
 
@@ -125,7 +126,10 @@ public class TimeSeriesForecast {
         evaluationModules.add(mape);
         evaluationModules.add(mae);
         evaluationModules.add(rmse);
-        List<Double> evaluationResult = new ArrayList<>();
+
+        String[] evaluationNames = {"Accuracy", "Mean Error", "Model Fitness"};
+        String[][] evaluationResult = new String[3][2];
+        int evalIndex = 0;
         for (TSEvalModule mod : evaluationModules) {
             int index = 0;
             List<String> fields = new ArrayList<>();
@@ -137,11 +141,14 @@ public class TimeSeriesForecast {
             }
             double[] measure = mod.calculateMeasure();
             if ((mod.getEvalName()).equals("MAPE")) {
-                evaluationResult.add(Math.round((100.0 - measure[0]) * 100.0) / 100.0);
+                evaluationResult[evalIndex] = new String[]{evaluationNames[evalIndex],
+                        Double.toString(Math.round((100.0 - measure[0]) * 100.0) / 100.0)};
             } else {
-                evaluationResult.add(Math.round((measure[0])* 100.0)/100.0);
+                evaluationResult[evalIndex] = new String[]{evaluationNames[evalIndex],
+                        Double.toString(Math.round((measure[0])* 100.0)/100.0)};
             }
             // System.out.println(evaluationResult.get(evaluationResult.size() - 1));
+            evalIndex += 1;
         }
         return evaluationResult;
     }
