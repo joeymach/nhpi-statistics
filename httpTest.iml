@@ -21,29 +21,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="commons-io-2.11" level="project" />
-    <orderEntry type="library" name="commons.io" level="project" />
-    <orderEntry type="library" name="commons-math-4" level="project" />
     <orderEntry type="library" name="apache.commons.math3" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/timeseriesForecasting1.1.27.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/weka-stable-3.8.6.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="jfree.jfreechart" level="project" />
+    <orderEntry type="library" name="junit" level="project" />
+    <orderEntry type="library" name="timeseriesForecasting1.1.27" level="project" />
+    <orderEntry type="library" exported="" name="nz.ac.waikato.cms.weka.stable" level="project" />
   </component>
 </module>
