@@ -56,6 +56,7 @@ public class TimeSeriesUI {
         } else {
             addTimeSeriesToDataset(data);
             renderTimeSeriesUIPanel();
+            TTestUI.initializeTTestPanel();
         }
     }
 
