@@ -54,6 +54,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 	JPanel visualizationPanel = new JPanel();
 	static JPanel timeSeriesPanel = new JPanel();
 	static JPanel forecastPanel = new JPanel();
+	static JPanel tTestPanel = new JPanel();
 
 	// UI instance variables
 	UserParametersUI userParametersUI;
@@ -95,6 +96,10 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		return forecastPanel;
 	}
 
+	public static JPanel getTTestPanel() {
+		return tTestPanel;
+	}
+
 	public MainUI() {
 		// Set window title
 		super("NHPI Statistics");
@@ -118,6 +123,9 @@ public class MainUI extends JFrame implements ListSelectionListener {
 
 		// 3rd Panel: Forecast
 		midContainer.add(forecastPanel);
+
+		// 4th Panel: TTest
+		midContainer.add(tTestPanel);
 
 		// 4nd Panel: Visualizations
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);

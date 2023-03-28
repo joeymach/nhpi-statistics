@@ -36,7 +36,8 @@ public class ConnectDatabaseTest {
         String query = ConnectDatabase.getQuery("Ontario", "Toronto", "2010",
                 "1", "2014", "2");
 
-        String expectedQuery = "SELECT * from nhpi WHERE province=\"Ontario\" AND city=\"Toronto\" AND ((year=2010 AND month>=1) OR year>=2011) AND ((year=2014 AND month<=2) OR year<=2013);";
+        String expectedQuery = "SELECT * from nhpi WHERE province=\"Ontario\" AND city=\"Toronto\" " +
+                "AND ((year=2010 AND month>=1) OR year>=2011) AND ((year=2014 AND month<=2) OR year<=2013);";
         assertEquals(query, expectedQuery);
     }
 

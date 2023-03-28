@@ -1,20 +1,17 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
-import statsVisualiser.HeaderParameterValues;
 import statsVisualiser.DataQuery;
 
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Vector;
 
-public class MainUITest {
+public class DataQueryTest {
     @Test
     public void getDataFromDatabaseFailsTest() throws SQLException {
 
         String[][] data = DataQuery.getDataFromDatabase("All", "All",
                 "2010", "1", "2000", "1");
 
-        assertEquals(data.length, 0);
+        assertEquals(data[0][0], "Invalid");
     }
 
     @Test

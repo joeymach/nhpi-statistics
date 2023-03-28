@@ -14,8 +14,6 @@ public class ForecastSelectionUI implements ActionListener  {
         if (forecastMenuPanel == null) {
             createForecastMenuPanel();
         }
-        System.out.println("ASD");
-
         return forecastMenuPanel;
     }
 
@@ -26,7 +24,6 @@ public class ForecastSelectionUI implements ActionListener  {
         Vector<String> forecastModel = new Vector<String>(Arrays.asList(forecastModelArr));
 
         JComboBox<String> forecastModelList = new JComboBox<String>(forecastModel);
-
 
         openForecastMenuButton = new JButton("Open Forecast Menu");
         openForecastMenuButton.addActionListener(new ForecastSelectionUI());
