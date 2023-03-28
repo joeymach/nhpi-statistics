@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 
 public class LoadDataUI implements ActionListener {
     // Data variables
-    private String[][] rawData;
+    static String[][] rawData;
     String[][] descData;
 
     // Panel variables
@@ -119,5 +119,9 @@ public class LoadDataUI implements ActionListener {
 
     public JPanel getLoadDataPanel() {
         return this.loadDataPanel;
+    }
+
+    public static String[][] getRawData() {
+        return rawData;
     }
 }
