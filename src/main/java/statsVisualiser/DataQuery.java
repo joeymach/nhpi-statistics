@@ -17,8 +17,8 @@ public class DataQuery {
                 (Integer.parseInt(fromYear) > Integer.parseInt(toYear) ||
                         (Integer.parseInt(fromYear) == Integer.parseInt(toYear) &&
                                 (Integer.parseInt(fromMonth) > (Integer.parseInt(toMonth)))))) {
-            System.out.println("Dates passed is invalid");
-            dataCleaned = new String[][]{};
+            dataCleaned = new String[][]{{"Invalid"}};
+            System.out.println(dataCleaned[0][0] + " filter parameters for getting data");
         } else {
             //ConnectDatabase mysql = new ConnectDatabase();
             Connection connection = ConnectDatabase.getConnection();
