@@ -17,7 +17,8 @@ import java.awt.*;
 import java.util.List;
 
 public class ForecastUI {
-    static TimeSeriesCollection dataset = new TimeSeriesCollection();
+    static TimeSeriesCollection dataset;
+    static String title;
 
     public static void showForecast(int timeSeriesLegendIndex, int toYear, int toMonth,
                                     List<Double> forecasts) throws Exception {
@@ -37,7 +38,9 @@ public class ForecastUI {
 
     public static ChartPanel getTimeSeriesPanel() {
         XYPlot plot = new XYPlot();
-        JFreeChart initialTimeSeriesChart = new JFreeChart("NHPI % Change Monthly",
+
+
+        JFreeChart initialTimeSeriesChart = new JFreeChart(title,
                 new Font("Serif", java.awt.Font.BOLD, 18), plot, true);
         ChartPanel chartPanel = new ChartPanel(initialTimeSeriesChart);
         chartPanel.setPreferredSize(new Dimension(1000, 500));
@@ -49,12 +52,14 @@ public class ForecastUI {
         plot.setRenderer(0, new XYSplineRenderer());
         DateAxis domainAxis = new DateAxis("Month, Year");
         plot.setDomainAxis(domainAxis);
-        plot.setRangeAxis(new NumberAxis("NHPI % Change Monthly with Foreasts"));
+        plot.setRangeAxis(new NumberAxis("NHPI % Change Monthly with Forecasts"));
 
-        plot.getRenderer().setSeriesStroke(0, new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        plot.getRenderer().setSeriesStroke(0, new BasicStroke(2.0f,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         plot.getRenderer().setSeriesPaint(0, Color.RED);
 
-        plot.getRenderer().setSeriesStroke(1, new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0, new float[]{10}, 0));
+        plot.getRenderer().setSeriesStroke(1, new BasicStroke(2.0f,
+                BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0, new float[]{10}, 0));
         plot.getRenderer().setSeriesPaint(1, Color.BLUE);
 
         return chartPanel;
@@ -62,11 +67,14 @@ public class ForecastUI {
 
     public static void setDataset(int timeSeriesLegendIndex, int toYear, int toMonth,
                                   List<Double> forecasts) throws CloneNotSupportedException {
+        title = "NHPI % Change Monthly Forecasts for Time Series #" + timeSeriesLegendIndex;
+
         TimeSeries seriesOriginal = TimeSeriesUI.getTimeSeriesDataset().getSeries(timeSeriesLegendIndex);
         TimeSeries seriesOriginalCopy = (TimeSeries) seriesOriginal.clone();
 
         seriesOriginalCopy.setKey("Original Data");
 
+        dataset = new TimeSeriesCollection();
         dataset.addSeries(seriesOriginalCopy);
 
         TimeSeries seriesForecast = new TimeSeries("Forecasted Data");
