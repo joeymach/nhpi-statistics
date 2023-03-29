@@ -67,7 +67,7 @@ public class ForecastUI {
 
     public static void setDataset(int timeSeriesLegendIndex, int toYear, int toMonth,
                                   List<Double> forecasts) throws CloneNotSupportedException {
-        title = "NHPI % Change Monthly Forecasts for Time Series #" + timeSeriesLegendIndex;
+        title = "NHPI % Change Monthly Forecasts for Time Series #" + (timeSeriesLegendIndex + 1);
 
         TimeSeries seriesOriginal = TimeSeriesUI.getTimeSeriesDataset().getSeries(timeSeriesLegendIndex);
         TimeSeries seriesOriginalCopy = (TimeSeries) seriesOriginal.clone();
