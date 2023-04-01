@@ -4,9 +4,9 @@ import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.timeseries.WekaForecaster;
 
 public class ForecastBuilderConcrete implements ForecastBuilder {
-    private int epoch = 1;
-    private int iteration = 1;
-    private int convergenceThreshold = 1;
+    private int epoch;
+    private int iteration;
+    private int convergenceThreshold;
 
     public ForecastBuilderConcrete setEpoch(int epoch) {
         this.epoch = epoch;

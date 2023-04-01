@@ -1,14 +1,13 @@
 import org.junit.Test;
-import statsVisualiser.DataQuery;
-import statsVisualiser.DescriptiveStats;
-import statsVisualiser.HeaderParameterValues;
+import statsVisualiser.HeaderParam.HeaderParameter;
+import statsVisualiser.HeaderParam.HeaderParameterValues;
 
 import java.util.Arrays;
 import java.util.Vector;
 
 import static org.junit.Assert.assertEquals;
 
-public class HeaderParameterValuesTest {
+public class HeaderParameterTest {
     @Test
     public void getCitiesTest() {
         System.out.println("Test if getCities returns appropriate unique list of cities");
@@ -23,7 +22,7 @@ public class HeaderParameterValuesTest {
 
         Vector<String> citiesNamesExpected = new Vector<String>(Arrays.asList(citiesArray));
 
-        Vector<String> citiesNames = HeaderParameterValues.getCities();
+        Vector<String> citiesNames = HeaderParameterValues.getParams("cities");;
 
         for (int i = 0; i < citiesNamesExpected.size(); i++) {
             assertEquals(citiesNames.get(i), citiesNamesExpected.get(i));
@@ -41,7 +40,7 @@ public class HeaderParameterValuesTest {
 
         Vector<String> provincesExpected = new Vector<String>(Arrays.asList(provincesArray));
 
-        Vector<String> provinces = HeaderParameterValues.getProvinces();
+        Vector<String> provinces = HeaderParameterValues.getParams("provinces");;
 
         for (int i = 0; i < provincesExpected.size(); i++) {
             assertEquals(provinces.get(i), provincesExpected.get(i));

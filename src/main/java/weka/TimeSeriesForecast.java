@@ -77,7 +77,7 @@ public class TimeSeriesForecast {
                 .setConvergenceThreshold(convergenceThreshold)
                 .buildForecaster();
 
-        forecaster.buildForecaster(nhpiData, System.out);
+        forecaster.buildForecaster(nhpiData);
         forecaster.primeForecaster(nhpiData);
 
         List<List<NumericPrediction>> forecast = forecaster.forecast(numMonthsToForecast, System.out);

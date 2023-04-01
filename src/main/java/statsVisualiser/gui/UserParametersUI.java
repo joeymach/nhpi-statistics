@@ -1,13 +1,13 @@
 package statsVisualiser.gui;
 
 import statsVisualiser.DataQuery;
-import statsVisualiser.HeaderParameterValues;
+import statsVisualiser.HeaderParam.HeaderParameter;
+import statsVisualiser.HeaderParam.HeaderParameterValues;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -50,15 +50,15 @@ public class UserParametersUI extends JFrame implements ActionListener {
         JPanel column2HeaderPanel = new JPanel(new FlowLayout());
 
         JLabel chooseProvince = new JLabel("Province: ");
-        Vector<String> provincesNames = HeaderParameterValues.getProvinces();
+        Vector<String> provincesNames = HeaderParameterValues.getParams("provinces");
         JLabel chooseCity = new JLabel("City: ");
-        Vector<String> cityNames = HeaderParameterValues.getCities();
+        Vector<String> cityNames = HeaderParameterValues.getParams("cities");
         JLabel fromYear = new JLabel("From year: ");
         JLabel fromMonth = new JLabel("From month: ");
         JLabel toYear = new JLabel("To year: ");
         JLabel toMonth = new JLabel("To month: ");
-        Vector<String> years = HeaderParameterValues.getYears();
-        Vector<String> months = HeaderParameterValues.getMonths();
+        Vector<String> years = HeaderParameterValues.getParams("years");;
+        Vector<String> months = HeaderParameterValues.getParams("month");
         provincesList = new JComboBox<String>(provincesNames);
         cityList = new JComboBox<String>(cityNames);
         fromYearList = new JComboBox<String>(years);
