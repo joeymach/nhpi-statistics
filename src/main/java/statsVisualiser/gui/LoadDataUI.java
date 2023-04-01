@@ -1,11 +1,10 @@
 package statsVisualiser.gui;
 
-import statsVisualiser.DescriptiveStats;
+import statsVisualiser.Stats.DescriptiveStats;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;

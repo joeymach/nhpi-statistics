@@ -31,33 +31,17 @@ public class TimeSeriesForecast {
     public static void main(String[] args) throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date.arff")));
 
-        WekaForecaster forecaster = new WekaForecaster();
-
-        forecaster.setFieldsToForecast("Value");
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
-        mlp.setTrainingTime(200); // epoch
-        mlp.setNumDecimalPlaces(10); // iterations
-        mlp.setValidationThreshold(300); // convergence
-
-        forecaster.setBaseForecaster(mlp);
-
-        forecaster.getTSLagMaker().setTimeStampField("Date");
-        forecaster.getTSLagMaker().setMinLag(1);
-        forecaster.getTSLagMaker().setMaxLag(2);
-
-        forecaster.getTSLagMaker().setAddMonthOfYear(true);
-        forecaster.getTSLagMaker().setAddQuarterOfYear(true);
+        WekaForecaster forecaster = new ForecastBuilderConcrete().buildForecaster();
 
         forecaster.buildForecaster(nhpiTrain, System.out);
         forecaster.primeForecaster(nhpiTrain);
 
-        List<List<NumericPrediction>> forecast = forecaster.forecast(108, System.out);
+        List<List<NumericPrediction>> forecast = forecaster.forecast(108);
 
         for (int i = 0; i < 108; i++) {
             List<NumericPrediction> predsAtStep = forecast.get(i);
             NumericPrediction predForTarget = predsAtStep.get(0);
-            System.out.print("" + predForTarget.predicted() + " ");
-            System.out.println();
+            System.out.println(predForTarget.predicted() + " ");
         }
     }
 

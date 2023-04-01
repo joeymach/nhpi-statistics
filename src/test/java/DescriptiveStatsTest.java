@@ -1,9 +1,6 @@
 import org.junit.Test;
 import statsVisualiser.DataQuery;
-import statsVisualiser.DescriptiveStats;
-import weka.TimeSeriesForecast;
-
-import java.util.List;
+import statsVisualiser.Stats.DescriptiveStats;
 
 import static org.junit.Assert.assertEquals;
 

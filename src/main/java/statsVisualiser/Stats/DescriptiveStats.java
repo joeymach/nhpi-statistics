@@ -1,15 +1,12 @@
-package statsVisualiser;
+package statsVisualiser.Stats;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DescriptiveStats {
+public class DescriptiveStats extends Statistics {
     public static String[][] getDescriptiveStats(String[][] rawData) {
-        DescriptiveStatistics descriptiveStatistics = new DescriptiveStatistics();
-        List<Double> nhpiLoadedValues = DescriptiveStats.sanitizeNhpiInput(rawData);
-        nhpiLoadedValues.forEach(descriptiveStatistics::addValue);
+        DescriptiveStatistics descriptiveStatistics = createDescriptiveStatsData(rawData);
 
         double average = descriptiveStatistics.getMean();
         double median = descriptiveStatistics.getPercentile(50);
@@ -26,13 +23,5 @@ public class DescriptiveStats {
         descriptiveStats[4] = new String[]{"Max", Double.toString(Math.round(max * 10.0) / 10.0)};
 
         return descriptiveStats;
-    }
-
-    public static List<Double> sanitizeNhpiInput(String[][] rawData) {
-        List<Double> nhpiLoadedValues = new ArrayList<>();
-        for(String[] row : rawData) {
-            nhpiLoadedValues.add(Double.parseDouble(row[4]));
-        }
-        return nhpiLoadedValues;
     }
 }

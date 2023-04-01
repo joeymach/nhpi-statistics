@@ -4,9 +4,10 @@ import weka.classifiers.functions.MultilayerPerceptron;
 import weka.classifiers.timeseries.WekaForecaster;
 
 public class ForecastBuilderConcrete implements ForecastBuilder {
-    private int epoch;
-    private int iteration;
-    private int convergenceThreshold;
+    // Default forecaster parameters
+    private int epoch = 1;
+    private int iteration = 1;
+    private int convergenceThreshold = 1;
 
     public ForecastBuilderConcrete setEpoch(int epoch) {
         this.epoch = epoch;
@@ -36,7 +37,7 @@ public class ForecastBuilderConcrete implements ForecastBuilder {
 
         forecaster.getTSLagMaker().setTimeStampField("Date");
         forecaster.getTSLagMaker().setMinLag(1);
-        forecaster.getTSLagMaker().setMaxLag(12);
+        forecaster.getTSLagMaker().setMaxLag(2);
 
         forecaster.getTSLagMaker().setAddMonthOfYear(true);
         forecaster.getTSLagMaker().setAddQuarterOfYear(true);
