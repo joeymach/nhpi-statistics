@@ -9,18 +9,32 @@ import java.util.HashMap;
 
 public class TTest {
     public static void main(String[] args) throws Exception {
-        String[][] data1 = DataQuery.getDataFromDatabase("Nova Scotia", "All", "All",
+//        String[][] data1 = DataQuery.getDataFromDatabase("Nova Scotia", "All", "All",
+//                "All", "All", "All");
+//
+//        String[][] data2 = DataQuery.getDataFromDatabase("All", "All", "All",
+//                "All", "All", "All");
+//
+//        SummaryStatistics statsOne = getSummaryStatistics(data1);
+//        SummaryStatistics statsTwo = getSummaryStatistics(data2);
+//
+//        org.apache.commons.math3.stat.inference.TTest tTest = new org.apache.commons.math3.stat.inference.TTest();
+//        double pValue = tTest.tTest(statsOne, statsTwo);
+//        System.out.println(pValue);
+
+        String[][] arrayEx = DataQuery.getDataFromDatabase("All", "All", "All",
                 "All", "All", "All");
 
-        String[][] data2 = DataQuery.getDataFromDatabase("All", "All", "All",
-                "All", "All", "All");
+        for(String[] row : arrayEx) {
+            System.out.println("[");
+            System.out.println(row[0]);
+            System.out.println(row[1]);
+            System.out.println(row[2]);
+            System.out.println(row[3]);
+            System.out.println(row[4]);
+            System.out.println("]");
 
-        SummaryStatistics statsOne = getSummaryStatistics(data1);
-        SummaryStatistics statsTwo = getSummaryStatistics(data2);
-
-        org.apache.commons.math3.stat.inference.TTest tTest = new org.apache.commons.math3.stat.inference.TTest();
-        double pValue = tTest.tTest(statsOne, statsTwo);
-        System.out.println(pValue);
+        }
     }
 
     public static String runTTest(HashMap<String, String> timeSeries1Param,

@@ -121,13 +121,13 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		// 2nd Panel: Time series
 		midContainer.add(timeSeriesPanel);
 
-		// 3th Panel: TTest
+		// 3rd Panel: TTest
 		midContainer.add(tTestPanel);
 
 		// 4rd Panel: Forecast
 		midContainer.add(forecastPanel);
 
-		// 4nd Panel: Visualizations
+		// 5th Panel: Visualizations
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setPreferredSize(new Dimension(200, 200));
 		list.addListSelectionListener(this);

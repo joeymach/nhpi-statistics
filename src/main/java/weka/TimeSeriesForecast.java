@@ -71,21 +71,11 @@ public class TimeSeriesForecast {
                                                            throws Exception {
         Instances nhpiData = TimeSeriesForecast.getPrimingData(dateToForecastFrom);
 
-        forecaster = new WekaForecaster();
-        forecaster.setFieldsToForecast("Value");
-        MultilayerPerceptron mlp = new MultilayerPerceptron();
-        mlp.setTrainingTime(epoch); // set epoch
-        mlp.setNumDecimalPlaces(iteration); // set iteration
-        mlp.setValidationThreshold(convergenceThreshold); // set convergence threshold
-
-        forecaster.setBaseForecaster(mlp);
-
-        forecaster.getTSLagMaker().setTimeStampField("Date");
-        forecaster.getTSLagMaker().setMinLag(1);
-        forecaster.getTSLagMaker().setMaxLag(2);
-
-        forecaster.getTSLagMaker().setAddMonthOfYear(true);
-        forecaster.getTSLagMaker().setAddQuarterOfYear(true);
+        forecaster = new ForecastBuilderConcrete()
+                .setEpoch(epoch)
+                .setIteration(iteration)
+                .setConvergenceThreshold(convergenceThreshold)
+                .buildForecaster();
 
         forecaster.buildForecaster(nhpiData, System.out);
         forecaster.primeForecaster(nhpiData);
