@@ -5,6 +5,8 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import java.util.List;
 
 public class DescriptiveStats extends Statistics {
+
+    // Get an array of descriptive statistics for data (avg, median, st.d, min, max)
     public static String[][] getDescriptiveStats(String[][] rawData) {
         DescriptiveStatistics descriptiveStatistics = createDescriptiveStatsData(rawData);
 

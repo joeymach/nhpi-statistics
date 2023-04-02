@@ -9,6 +9,7 @@ public class ProvincesParam implements HeaderParameter {
             "Ontario/Quebec", "Ontario", "Prairie Region", "Manitoba",
             "Saskatchewan", "Alberta", "British Columbia"};
 
+    // Returns unique vector of provinces in the dataset
     @Override
     public Vector<String> getParamValues() {
         Vector<String> provinces = new Vector<String>(Arrays.asList(paramValues));

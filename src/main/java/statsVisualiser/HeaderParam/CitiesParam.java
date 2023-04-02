@@ -12,6 +12,7 @@ public class CitiesParam implements HeaderParameter {
             "Regina", "Saskatoon", "Calgary", "Edmonton",
             "Kelowna", "Vancouver", "Victoria"};
 
+    // Returns unique vector of cities in the dataset
     public Vector<String> getParamValues() {
         Vector<String> citiesNames = new Vector<String>(Arrays.asList(paramValues));
         return citiesNames;
