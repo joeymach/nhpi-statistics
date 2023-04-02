@@ -6,6 +6,12 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Vector;
 
+/*
+Class responsibility: [Use case 5] forecast selection UI which appears in the
+main application frame allowing user to selection forecast prediction
+method (the model) and which loaded time series they would like to
+perform forecast predictions on.
+*/
 public class ForecastSelectionUI implements ActionListener  {
     static JPanel forecastMenuPanel;
     static JButton openForecastMenuButton;

@@ -14,6 +14,11 @@ import java.util.Vector;
 
 import java.awt.event.ActionListener;
 
+/*
+Class responsibility: [Use case 1] Renders user parameters
+input panel where users can specify province, city, and dates
+they want from the dataset.
+*/
 public class UserParametersUI extends JFrame implements ActionListener {
 
     // Header selection global variables

@@ -128,15 +128,15 @@ public class MainUI extends JFrame{
 			}
 		});
 
-		// Header selection panel
-		this.userParametersUI =  new UserParametersUI(loadedDataPane);
-		JPanel headerSelectionPanel = userParametersUI.getHeaderSelectionPanel();
-		getContentPane().add(headerSelectionPanel, BorderLayout.NORTH);
-
 		// Setting up wrapper mid-container for the below panels
 		JScrollPane mainScrollPane = new JScrollPane(midContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		getContentPane().add(mainScrollPane, BorderLayout.CENTER);
+
+		// Header selection panel
+		this.userParametersUI =  new UserParametersUI(loadedDataPane);
+		JPanel headerSelectionPanel = userParametersUI.getHeaderSelectionPanel();
+		getContentPane().add(headerSelectionPanel, BorderLayout.NORTH);
 
 		// 1st panel: raw data table or descriptive stats
 		midContainer.add(loadedDataPane);
@@ -159,7 +159,6 @@ public class MainUI extends JFrame{
 		midContainer.setLayout(new BoxLayout(midContainer, BoxLayout.Y_AXIS));
 		midContainer.setVisible(true);
 	}
-
 
 	public static void main(String[] args) {
 		frame = MainUI.getInstance();

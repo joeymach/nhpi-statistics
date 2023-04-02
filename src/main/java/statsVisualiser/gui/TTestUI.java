@@ -11,6 +11,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
+/*
+Class responsibility: [Use case 4] Render TTest
+panel so users can run TTest to compare any 2 time series
+that they have already loaded.
+*/
 public class TTestUI implements ActionListener {
     static JComboBox timeSeriesList1;
     static JComboBox timeSeriesList2;

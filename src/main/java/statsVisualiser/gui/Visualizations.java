@@ -37,6 +37,10 @@ import java.util.Map;
 
 import static statsVisualiser.gui.MainUI.midContainer;
 
+/*
+Class responsibility: [Use case 3] Renders predefined
+visualizations with configurations.
+*/
 public class Visualizations extends JFrame implements ListSelectionListener {
 
     private static final long serialVersionUID = 1L;

@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+/*
+Class responsibility: [Use case 5] forecast dialog which allows users to specify forecast
+parameters (months to forecast, epoch, iterations, and convergence threshold).
+*/
 public class ForecastDialogUI extends JDialog implements ActionListener {
     static JDialog forecastMenuDialog;
     static JPanel dialogPanel;

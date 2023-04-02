@@ -16,6 +16,11 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/*
+Class responsibility: [User case 5] Render the forecast predictions for
+time series based on specified parameters the user inputted in both
+ForecastSelectionUI and ForecastDialogUI.
+*/
 public class ForecastUI {
     static TimeSeriesCollection dataset;
     static String title;

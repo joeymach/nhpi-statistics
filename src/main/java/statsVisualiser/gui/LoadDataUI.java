@@ -10,6 +10,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/*
+Class responsibility: [Use case 1] show the loaded data table in
+either raw data table format, or as a table of descriptive statistics
+of the data (avg, median, st.d, min, max).
+*/
 public class LoadDataUI implements ActionListener {
     // Data variables
     static String[][] rawData;

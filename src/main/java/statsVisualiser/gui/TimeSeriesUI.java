@@ -23,6 +23,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Vector;
 
+/*
+Class responsibility: [Use case 1] compare time series on
+demand. Users can select parameters to load a new time series
+to be compared with existing time series on demand.
+*/
 public class TimeSeriesUI {
 
     static JPanel timeSeriesUIPanel = new JPanel();
