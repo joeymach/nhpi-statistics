@@ -43,21 +43,23 @@ import java.sql.*;
 
 import database.ConnectDatabase;
 
-public class MainUI extends JFrame implements ListSelectionListener {
+public class MainUI extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
+	//midcontainer JPanel
 	static JPanel midContainer = new JPanel();
-
-	// Panels
+	//
+//	// Panels
 	JPanel loadedDataPane = new JPanel();
-	JPanel visualizationPanel = new JPanel();
+	static JPanel visualizationPanel = new JPanel();
+	static JPanel settingsPanel = new JPanel();
 	static JPanel timeSeriesPanel = new JPanel();
 	static JPanel forecastPanel = new JPanel();
-	static JPanel tTestPanel = new JPanel();
-
-	// UI instance variables
+	//
+//	// UI instance variables
 	UserParametersUI userParametersUI;
+	Visualizations visualizationsClass;
 
 	//Visualizations variables
 	JPanel chartLayout = new JPanel();
@@ -78,7 +80,7 @@ public class MainUI extends JFrame implements ListSelectionListener {
 	JFreeChart piechart;
 	ChartPanel piepanel = new ChartPanel(chart);;
 
-	// MainUI instance
+//	 MainUI instance
 	private static MainUI instance;
 	public static JFrame frame;
 
@@ -96,18 +98,38 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		return forecastPanel;
 	}
 
-	public static JPanel getTTestPanel() {
-		return tTestPanel;
+	public static JPanel getVisualizationPanel() {
+		return visualizationPanel;
 	}
 
 	public MainUI() {
 		// Set window title
 		super("NHPI Statistics");
+		this.visualizationsClass =  new Visualizations();
+
+		JButton configureButton = new JButton("Configure...");
+
+		JPanel settingsPanel = visualizationsClass.getSettingsPanel();
+		settingsPanel.setVisible(false);
+
+		configureButton.addActionListener(new ActionListener() {
+			private boolean isSettingsPanelVisible = false;
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				isSettingsPanelVisible = !isSettingsPanelVisible; // toggle the visibility flag
+				settingsPanel.setVisible(isSettingsPanelVisible);
+
+			}
+		});
 
 		// Header selection panel
 		this.userParametersUI =  new UserParametersUI(loadedDataPane);
 		JPanel headerSelectionPanel = userParametersUI.getHeaderSelectionPanel();
 		getContentPane().add(headerSelectionPanel, BorderLayout.NORTH);
+
+//		JPanel settingsPanel = this.visualizations.getSettingsPanel();
+//		midContainer.add(settingsPanel);
 
 		// Setting up wrapper mid-container for the below panels
 		//midContainer.setLayout(new BorderLayout());
@@ -121,202 +143,18 @@ public class MainUI extends JFrame implements ListSelectionListener {
 		// 2nd Panel: Time series
 		midContainer.add(timeSeriesPanel);
 
-		// 3rd Panel: TTest
-		midContainer.add(tTestPanel);
-
-		// 4rd Panel: Forecast
+		// 3rd Panel: Forecast
 		midContainer.add(forecastPanel);
 
-		// 5th Panel: Visualizations
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.setPreferredSize(new Dimension(200, 200));
-		list.addListSelectionListener(this);
 
-		chartLayout.setLayout(new GridLayout(1, 4));
-		chartLayout.setPreferredSize(new Dimension(600, 400));
-		try {
-			linechart();
-			barchart();
-			scatter();
-			piechart();
-		} catch (SQLException ex) {
-			throw new RuntimeException(ex);
-		};
-		chartLayout.add(linePanel);
-		chartLayout.add(barPanel);
-		chartLayout.add(scatterpanel);
-		chartLayout.add(piepanel);
-		linePanel.setVisible(false);
-		barPanel.setVisible(false);
-		scatterpanel.setVisible(false);
-		piepanel.setVisible(false);
-
-		visualizationPanel.setLayout(new GridLayout(2, 1));
-		visualizationPanel.add(chartLayout);
-		visualizationPanel.add(list);
-
+		visualizationPanel = this.visualizationsClass.getVisualizations();
 		midContainer.add(visualizationPanel);
-
+		midContainer.add(configureButton);
+		midContainer.add(settingsPanel);
 		midContainer.setLayout(new BoxLayout(midContainer, BoxLayout.Y_AXIS));
 		midContainer.setVisible(true);
 	}
 
-	public void linechart() throws SQLException {
-		Connection connection = ConnectDatabase.getConnection();
-
-		String linequery = "SELECT year, value FROM nhpi WHERE city=? AND province = ?";
-		PreparedStatement statement = connection.prepareStatement(linequery);
-		statement.setString(1, "Toronto");
-		statement.setString(2, "Ontario");
-		ResultSet result = statement.executeQuery();
-
-
-		ArrayList<String[]> data = new ArrayList<String[]>();
-		while (result.next()){
-			int year = result.getInt("year");
-			double value = result.getDouble("value");
-			data.add(new String[]{String.valueOf(year), String.valueOf(value)});
-		}
-
-		TimeSeriesCollection dataset = new TimeSeriesCollection();
-		TimeSeries series = new TimeSeries("New Housing Price Index for Toronto, Ontario");
-		dataset.addSeries(series);
-		for (String[] x : data) {
-			int year = Integer.parseInt(x[0]);
-			double value = Double.parseDouble(x[1]);
-			series.addOrUpdate(new Year(year), value);
-		}
-
-		chart = ChartFactory.createTimeSeriesChart(
-				"New Housing Price Index for Toronto, Ontario",
-				"Year",
-				"Price Index",
-				dataset,
-				true,
-				true,
-				false
-		);
-
-		linePanel = new ChartPanel(chart);
-		linePanel.setSize(300, 300);
-	}
-
-	public void barchart() throws SQLException {
-		Connection connection = ConnectDatabase.getConnection();
-
-		String barquery = "SELECT province, AVG(value) AS averageVal FROM nhpi WHERE year='2020' GROUP BY province";
-		PreparedStatement statement = connection.prepareStatement(barquery);
-		ResultSet result = statement.executeQuery();
-
-		DefaultCategoryDataset data = new DefaultCategoryDataset();
-		while (result.next()){
-			String province = result.getString("province");
-			double averageValue = result.getDouble("averageVal");
-			data.addValue(averageValue, "Average NHPI Value", province);
-		}
-
-		barchart = ChartFactory.createBarChart(
-				"Average NHPI Value by Province in 2020",
-				"Province", "Average NHPI Value",
-				data, PlotOrientation.VERTICAL,
-				true, true, false);
-
-		barPanel = new ChartPanel(barchart);
-		barPanel.setPreferredSize(new Dimension(400, 400));
-	}
-
-	public void scatter() throws SQLException {
-		Connection connection = ConnectDatabase.getConnection();
-
-		String scatterquery = "SELECT year, value FROM nhpi WHERE city=? AND province=? AND year BETWEEN ? AND ?";
-		PreparedStatement statement = connection.prepareStatement(scatterquery);
-		statement.setString(1, "Montreal");
-		statement.setString(2, "Quebec");
-		statement.setInt(3, 2020);
-		statement.setInt(4, 2022);
-		ResultSet result = statement.executeQuery();
-
-		ArrayList<String[]> data = new ArrayList<String[]>();
-		while (result.next()){
-			int year = result.getInt("year");
-			double value = result.getDouble("value");
-			data.add(new String[] { String.valueOf(year), String.valueOf(value) });
-		}
-
-		XYSeriesCollection dataS = new XYSeriesCollection();
-		XYSeries series = new XYSeries("New Housing Price Index for Montreal, 2020");
-		for (String[] x : data) {
-			int year = Integer.parseInt(x[0]);
-			double value = Double.parseDouble(x[1]);
-			series.add(year, value);
-		}
-		dataS.addSeries(series);
-
-		scatterchart = ChartFactory.createScatterPlot(
-				"Average NHPI Value in Montreal from 2020-2022",
-				"Year", "Value",
-				dataS, PlotOrientation.VERTICAL,
-				true, true, false);
-
-		scatterpanel = new ChartPanel(scatterchart);
-	}
-
-	public void piechart() throws SQLException {
-		Connection connection = ConnectDatabase.getConnection();
-
-		String piequery = "SELECT province, SUM(value) as totalNHPI FROM nhpi GROUP BY province";
-		PreparedStatement statement = connection.prepareStatement(piequery);
-		ResultSet result = statement.executeQuery();
-
-		DefaultPieDataset dataS = new DefaultPieDataset();
-		while (result.next()){
-			String province = result.getString("province");
-			double totalNhpi = result.getDouble("totalNHPI");
-			dataS.setValue(province, totalNhpi);
-		}
-
-		piechart = ChartFactory.createPieChart(
-				"NHPI Values according to Province",
-				dataS,
-				true,
-				true,
-				false);
-
-		piepanel = new ChartPanel(piechart);
-	}
-
-	public void valueChanged(ListSelectionEvent e) {
-		linePanel.setVisible(false);
-		barPanel.setVisible(false);
-		scatterpanel.setVisible(false);
-		piepanel.setVisible(false);
-
-		List<String> selectedVisualizations = list.getSelectedValuesList();
-
-		int selectedNumber = list.getSelectedValuesList().size();
-
-		if (selectedNumber>2) {
-			JOptionPane.showMessageDialog(MainUI.getInstance(), "Only 2 visualizations can be selected. Please unselect an option before choosing.");
-		}
-		else{
-			for (String x: selectedVisualizations){
-				if (x.equals("Line Chart")){
-					linePanel.setVisible(true);
-				}
-				if (x.equals("Bar Chart")){
-					barPanel.setVisible(true);
-
-				}
-				if (x.equals("Scatter Chart")){
-					scatterpanel.setVisible(true);
-				}
-				if (x.equals("Pie Chart")){
-					piepanel.setVisible(true);
-				}
-
-			}
-		}
-	}
 
 	public static void main(String[] args) {
 		frame = MainUI.getInstance();
