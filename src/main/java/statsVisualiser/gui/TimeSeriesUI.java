@@ -42,6 +42,7 @@ public class TimeSeriesUI {
 
     public static int numOfTimeSeries = 0;
 
+    // Adding a new time series to be compared with the other loaded time series graph
     public static void addTimeSeries(String province, String city, String fromYear,
                                      String fromMonth, String toYear, String toMonth) {
         addTimeSeriesParams(province, city, fromYear, fromMonth, toYear, toMonth);
