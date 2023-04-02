@@ -56,6 +56,8 @@ public class MainUI extends JFrame{
 	static JPanel settingsPanel = new JPanel();
 	static JPanel timeSeriesPanel = new JPanel();
 	static JPanel forecastPanel = new JPanel();
+	static JPanel tTestPanel = new JPanel();
+
 	//
 //	// UI instance variables
 	UserParametersUI userParametersUI;
@@ -96,6 +98,10 @@ public class MainUI extends JFrame{
 
 	public static JPanel getForecastPanel() {
 		return forecastPanel;
+	}
+
+	public static JPanel getTTestPanel() {
+		return tTestPanel;
 	}
 
 	public static JPanel getVisualizationPanel() {
@@ -142,6 +148,8 @@ public class MainUI extends JFrame{
 
 		// 2nd Panel: Time series
 		midContainer.add(timeSeriesPanel);
+		midContainer.add(tTestPanel);
+
 
 		// 3rd Panel: Forecast
 		midContainer.add(forecastPanel);
