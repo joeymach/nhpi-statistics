@@ -15,15 +15,7 @@ public class DataQueryTest {
     }
 
     @Test
-    public void getDataFromDatabaseSucceedsTest1() throws SQLException {
-        String[][] data = DataQuery.getDataFromDatabase("All", "All",
-                "2010", "1", "2011", "1");
-
-        assertEquals(data.length, 1560);
-    }
-
-    @Test
-    public void getDataFromDatabaseSucceedsTest2() throws SQLException {
+    public void successfulParsingOfDataFromCsvToNhpiDatabase() throws SQLException {
         String[][] data = DataQuery.getDataFromDatabase("All", "All",
                 "All", "All", "All", "All");
 
@@ -31,7 +23,16 @@ public class DataQueryTest {
     }
 
     @Test
-    public void getDataFromDatabaseSucceedsTest3() throws SQLException {
+    public void getDataFromDatabaseSucceedsTest1() throws SQLException {
+        String[][] data = DataQuery.getDataFromDatabase("All", "All",
+                "2010", "1", "2011", "1");
+
+        assertEquals(data.length, 1560);
+    }
+
+
+    @Test
+    public void getDataFromDatabaseSucceedsTest2() throws SQLException {
         String[][] data = DataQuery.getDataFromDatabase("Ontario", "Toronto",
                 "2010", "1", "2010", "7");
 
