@@ -130,6 +130,12 @@ public class UserParametersUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
         }
         else {
+            UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
+                    cityList.getSelectedItem().toString(),
+                    fromYearList.getSelectedItem().toString(),
+                    fromMonthList.getSelectedItem().toString(),
+                    toYearList.getSelectedItem().toString(),
+                    toMonthList.getSelectedItem().toString());
             loadDataUI = new LoadDataUI(data);
             JPanel loadDataPanelTemp = loadDataUI.getLoadDataPanel();
             loadedDataPanel.removeAll();
@@ -147,15 +153,7 @@ public class UserParametersUI extends JFrame implements ActionListener {
                     toYearList.getSelectedItem().toString(),
                     toMonthList.getSelectedItem().toString());
         }
-
         if (e.getSource() == loadDataButton) {
-            UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
-                    cityList.getSelectedItem().toString(),
-                    fromYearList.getSelectedItem().toString(),
-                    fromMonthList.getSelectedItem().toString(),
-                    toYearList.getSelectedItem().toString(),
-                    toMonthList.getSelectedItem().toString());
-
             loadDataUIToFrame();
         }
     }
