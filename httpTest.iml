@@ -34,5 +34,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" exported="" name="nz.ac.waikato.cms.weka.stable" level="project" />
   </component>
 </module>
