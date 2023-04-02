@@ -7,7 +7,6 @@ import java.sql.SQLException;
 public class DataQueryTest {
     @Test
     public void getDataFromDatabaseFailsTest() throws SQLException {
-
         String[][] data = DataQuery.getDataFromDatabase("All", "All",
                 "2010", "1", "2000", "1");
 
