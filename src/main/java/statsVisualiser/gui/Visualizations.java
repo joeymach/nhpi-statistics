@@ -44,17 +44,8 @@ visualizations with configurations.
 public class Visualizations extends JFrame implements ListSelectionListener {
 
     private static final long serialVersionUID = 1L;
-
-    JPanel loadedDataPane = new JPanel();
     JPanel panel = new JPanel();
 
-    static JPanel timeSeriesPanel = new JPanel();
-    static JPanel forecastPanel = new JPanel();
-    //
-//	// UI instance variables
-    UserParametersUI userParametersUI;
-
-    //Visualizations variables
     JPanel chartLayout = new JPanel();
     String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
     JList list = new JList(visualizations);
@@ -73,10 +64,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
     JFreeChart piechart;
     ChartPanel piepanel = new ChartPanel(chart);
 
-    //	 MainUI instance
-    private static MainUI instance;
-    public static JFrame frame;
-
     String[][] array = new String[0][0];
 
     int row = 0;
@@ -89,9 +76,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
     }
 
     public JPanel getVisualizations() {
-        // 4nd Panel: Visualizations
-
-
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setPreferredSize(new Dimension(200, 200));
         list.addListSelectionListener(this);
@@ -99,22 +83,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
         chartLayout.setLayout(new BoxLayout(chartLayout, BoxLayout.X_AXIS));
         chartLayout.setPreferredSize(new Dimension(600, 400));
-//        try {
-//            linechart();
-//            barchart();
-//            scatter();
-//            piechart();
-//        } catch (SQLException ex) {
-//            throw new RuntimeException(ex);
-//        };
-//        chartLayout.add(linePanel);
-//        chartLayout.add(barPanel);
-//        chartLayout.add(scatterpanel);
-//        chartLayout.add(piepanel);
-//        linePanel.setVisible(false);
-//        barPanel.setVisible(false);
-//        scatterpanel.setVisible(false);
-//        piepanel.setVisible(false);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.add(chartLayout);
@@ -129,8 +97,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
         JPanel subPanel = new JPanel();
 
 
-        // Add UI elements to the settingsPanel, such as JLabels, JTextFields, JButtons, etc.
-        // ...
         settingsPanel.setLayout(new GridLayout(2,2));
         settingsPanel.add(new JLabel("Settings",SwingConstants.CENTER));
 
@@ -200,25 +166,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
     public void linechart() throws SQLException {
         linePanel.removeAll();
-//        array = LoadDataUI.getRawData();
-
-        Connection connection = ConnectDatabase.getConnection();
-
-        String linequery = "SELECT year, value FROM nhpi WHERE city=? AND province = ?";
-        PreparedStatement statement = connection.prepareStatement(linequery);
-        statement.setString(1, "Toronto");
-        statement.setString(2, "Ontario");
-        ResultSet result = statement.executeQuery();
-
-//        String[][] arrayEx = DataQuery.getDataFromDatabase("All", "All", "All",
-//                "All", "All", "All");
-
-//        ArrayList<String[]> data = new ArrayList<String[]>();
-//        while (result.next()){
-//            int year = result.getInt("year");
-//            double value = result.getDouble("value");
-//            data.add(new String[]{String.valueOf(year), String.valueOf(value)});
-//        }
 
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         TimeSeries series = new TimeSeries("New Housing Price Index");
@@ -246,8 +193,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
         plot.getRenderer().setSeriesPaint(0, changeColour);
 
-
-//        linePanel = new ChartPanel(chart);
         linePanel.setChart(chart);
         linePanel.setSize(300, 300);
 
@@ -256,21 +201,8 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
     public void barchart() throws SQLException {
         barPanel.removeAll();
-//        String[][] arrayEx = DataQuery.getDataFromDatabase("All", "All", "All",
-//                "All", "All", "All");
-
-        Connection connection = ConnectDatabase.getConnection();
-
-        String barquery = "SELECT province, AVG(value) AS averageVal FROM nhpi WHERE year='2020' GROUP BY province";
-        PreparedStatement statement = connection.prepareStatement(barquery);
-        ResultSet result = statement.executeQuery();
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-//        for (String[] x: arrayEx) {
-//            String province = x[2];
-//            double averageValue = Double.parseDouble(x[1]);
-//            data.addValue(averageValue, "Average NHPI Value", province);
-//        }
 
         Map<String, List<Double>> dataMap = new HashMap<>();
         String province = "";
@@ -312,25 +244,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
     public void scatter() throws SQLException {
         scatterpanel.removeAll();
-//        String[][] arrayEx = DataQuery.getDataFromDatabase("All", "All", "All",
-//                "All", "All", "All");
-
-        Connection connection = ConnectDatabase.getConnection();
-
-        String scatterquery = "SELECT year, value FROM nhpi WHERE city=? AND province=? AND year BETWEEN ? AND ?";
-        PreparedStatement statement = connection.prepareStatement(scatterquery);
-        statement.setString(1, "Montreal");
-        statement.setString(2, "Quebec");
-        statement.setInt(3, 2020);
-        statement.setInt(4, 2022);
-        ResultSet result = statement.executeQuery();
-
-//        ArrayList<String[]> data = new ArrayList<String[]>();
-//        while (result.next()){
-//            int year = result.getInt("year");
-//            double value = result.getDouble("value");
-//            data.add(new String[] { String.valueOf(year), String.valueOf(value) });
-//        }
 
         XYSeriesCollection dataS = new XYSeriesCollection();
         XYSeries series = new XYSeries("New Housing Price Index");
@@ -364,20 +277,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
 
     public void piechart() throws SQLException {
         piepanel.removeAll();
-//        String[][] arrayEx = DataQuery.getDataFromDatabase("All", "All", "All",
-//                "All", "All", "All");
-        Connection connection = ConnectDatabase.getConnection();
-
-//        String piequery = "SELECT province, SUM(value) as totalNHPI FROM nhpi GROUP BY province";
-//        PreparedStatement statement = connection.prepareStatement(piequery);
-//        ResultSet result = statement.executeQuery();
-//
-//        DefaultPieDataset dataS = new DefaultPieDataset();
-//        while (result.next()){
-//            String province = result.getString("province");
-//            double totalNhpi = result.getDouble("totalNHPI");
-//            dataS.setValue(province, totalNhpi);
-//        }
 
         Map<String, Double> provinceSumMap = new HashMap<>();
         for (int i = 0; i < array.length; i++) {
@@ -393,7 +292,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
             }
         }
 
-        // create a pie chart dataset from the provinceSumMap
         DefaultPieDataset dataS = new DefaultPieDataset();
         for (String province : provinceSumMap.keySet()) {
             double sum = provinceSumMap.get(province);
@@ -415,19 +313,6 @@ public class Visualizations extends JFrame implements ListSelectionListener {
     }
 
     public void valueChanged(ListSelectionEvent e) {
-//        try {
-////            linechart();
-//            barchart();
-//            scatter();
-//            piechart();
-//        } catch (SQLException ex) {
-//            throw new RuntimeException(ex);
-//        };
-//        chartLayout.add(linePanel);
-//        chartLayout.add(barPanel);
-//        chartLayout.add(scatterpanel);
-//        chartLayout.add(piepanel);
-
         array = LoadDataUI.getRawData();
 
         linePanel.setVisible(false);

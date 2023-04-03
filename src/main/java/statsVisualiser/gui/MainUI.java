@@ -63,23 +63,23 @@ public class MainUI extends JFrame{
 	Visualizations visualizationsClass;
 
 	//Visualizations variables
-	JPanel chartLayout = new JPanel();
-	String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
-	JList list = new JList(visualizations);
+//	JPanel chartLayout = new JPanel();
+//	String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
+//	JList list = new JList(visualizations);
 
-	JFreeChart barchart;
+//	JFreeChart barchart;
 
 	JFreeChart chart;
-	ChartPanel linePanel = new ChartPanel(chart);
-	JPanel barPanel = new ChartPanel(chart);
-
-	JFreeChart scatterchart;
-
-	ChartPanel scatterpanel = new ChartPanel(chart);
-
-
-	JFreeChart piechart;
-	ChartPanel piepanel = new ChartPanel(chart);;
+//	ChartPanel linePanel = new ChartPanel(chart);
+//	JPanel barPanel = new ChartPanel(chart);
+//
+//	JFreeChart scatterchart;
+//
+//	ChartPanel scatterpanel = new ChartPanel(chart);
+//
+//
+//	JFreeChart piechart;
+//	ChartPanel piepanel = new ChartPanel(chart);;
 
     // MainUI instance
 	private static MainUI instance;
@@ -103,9 +103,9 @@ public class MainUI extends JFrame{
 		return tTestPanel;
 	}
 
-	public static JPanel getVisualizationPanel() {
-		return visualizationPanel;
-	}
+//	public static JPanel getVisualizationPanel() {
+//		return visualizationPanel;
+//	}
 
 	public MainUI() {
 		// Set window title
