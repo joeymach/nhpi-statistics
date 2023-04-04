@@ -1,47 +1,14 @@
 package statsVisualiser.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.util.Arrays;
-import java.util.Vector;
-import java.util.ArrayList;
+
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.axis.NumberAxis;
 
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
-
-import org.jfree.chart.renderer.xy.XYSplineRenderer;
-
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.time.Year;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-
-import java.util.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.time.Month;
-
-import java.sql.*;
-
-import database.ConnectDatabase;
 
 public class MainUI extends JFrame{
 
@@ -62,24 +29,6 @@ public class MainUI extends JFrame{
 	UserParametersUI userParametersUI;
 	Visualizations visualizationsClass;
 
-	//Visualizations variables
-//	JPanel chartLayout = new JPanel();
-//	String visualizations[] = {"Line Chart", "Bar Chart", "Scatter Chart", "Pie Chart"};
-//	JList list = new JList(visualizations);
-
-//	JFreeChart barchart;
-
-	JFreeChart chart;
-//	ChartPanel linePanel = new ChartPanel(chart);
-//	JPanel barPanel = new ChartPanel(chart);
-//
-//	JFreeChart scatterchart;
-//
-//	ChartPanel scatterpanel = new ChartPanel(chart);
-//
-//
-//	JFreeChart piechart;
-//	ChartPanel piepanel = new ChartPanel(chart);;
 
     // MainUI instance
 	private static MainUI instance;
@@ -102,10 +51,6 @@ public class MainUI extends JFrame{
 	public static JPanel getTTestPanel() {
 		return tTestPanel;
 	}
-
-//	public static JPanel getVisualizationPanel() {
-//		return visualizationPanel;
-//	}
 
 	public MainUI() {
 		// Set window title
