@@ -119,12 +119,12 @@ public class UserParametersUI extends JFrame implements ActionListener {
     public void loadDataUIToFrame() {
         String[][] data = new String[1][1];
         try {
-            data = DataQuery.getDataFromDatabase(loadDataParams.get("province"),
-                    loadDataParams.get("city"),
-                    loadDataParams.get("fromYear"),
-                    loadDataParams.get("fromMonth"),
-                    loadDataParams.get("toYear"),
-                    loadDataParams.get("toMonth"));
+            data = DataQuery.getDataFromDatabase(provincesList.getSelectedItem().toString(),
+                    cityList.getSelectedItem().toString(),
+                    fromYearList.getSelectedItem().toString(),
+                    fromMonthList.getSelectedItem().toString(),
+                    toYearList.getSelectedItem().toString(),
+                    toMonthList.getSelectedItem().toString());
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -134,6 +134,13 @@ public class UserParametersUI extends JFrame implements ActionListener {
             JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
         }
         else {
+            UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
+                    cityList.getSelectedItem().toString(),
+                    fromYearList.getSelectedItem().toString(),
+                    fromMonthList.getSelectedItem().toString(),
+                    toYearList.getSelectedItem().toString(),
+                    toMonthList.getSelectedItem().toString());
+
             loadDataUI = new LoadDataUI(data);
             JPanel loadDataPanelTemp = loadDataUI.getLoadDataPanel();
             loadedDataPanel.removeAll();

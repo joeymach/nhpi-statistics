@@ -29,7 +29,6 @@ public class MainUI extends JFrame{
 	UserParametersUI userParametersUI;
 	Visualizations visualizationsClass;
 
-
     // MainUI instance
 	private static MainUI instance;
 	public static JFrame frame;

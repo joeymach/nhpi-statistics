@@ -45,7 +45,6 @@ public class TimeSeriesUI {
     // Adding a new time series to be compared with the other loaded time series graph
     public static void addTimeSeries(String province, String city, String fromYear,
                                      String fromMonth, String toYear, String toMonth) {
-        addTimeSeriesParams(province, city, fromYear, fromMonth, toYear, toMonth);
 
         String[][] data = new String[1][1];
         try {
@@ -60,6 +59,7 @@ public class TimeSeriesUI {
             // Error alert window shown when selection parameters are invalid
             JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
         } else {
+            addTimeSeriesParams(province, city, fromYear, fromMonth, toYear, toMonth);
             addTimeSeriesToDataset(data);
             renderTimeSeriesUIPanel();
             TTestUI.initializeTTestPanel();
