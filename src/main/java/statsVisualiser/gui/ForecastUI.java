@@ -25,9 +25,8 @@ public class ForecastUI {
     static TimeSeriesCollection dataset;
     static String title;
 
-    public static void showForecast(int timeSeriesLegendIndex, int toYear, int toMonth,
-                                    List<Double> forecasts) throws Exception {
-        setDataset(timeSeriesLegendIndex, toYear, toMonth, forecasts);
+    public static void showForecast(ForecastData data) throws Exception {
+        setDataset(data.getTimeSeriesLegendIndex(), data.getToYear(), data.getToMonth(), data.getForecasts());
         ChartPanel forecastedChartPanel = getTimeSeriesPanel();
         JScrollPane metricsPanel = getMetricsTable();
 

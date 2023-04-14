@@ -63,24 +63,20 @@ public class ForecastDialogUI extends JDialog implements ActionListener {
         dialogPanel.add(timeSeriesLabel);
         dialogPanel.add(timeSeriesList);
 
-        JLabel monthsLabel = new JLabel("Number of months to forecast:");
+        createLabelForForecastDialogMethod("Number of months to forecast:", dialogPanel);
         monthsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-        dialogPanel.add(monthsLabel);
         dialogPanel.add(monthsSpinner);
 
-        JLabel iterationsLabel = new JLabel("Iterations:");
+        createLabelForForecastDialogMethod("Iterations:", dialogPanel);
         iterationsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-        dialogPanel.add(iterationsLabel);
         dialogPanel.add(iterationsSpinner);
 
-        JLabel epochsLabel = new JLabel("Epochs:");
+        createLabelForForecastDialogMethod("Epochs:", dialogPanel);
         epochsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-        dialogPanel.add(epochsLabel);
         dialogPanel.add(epochsSpinner);
 
-        JLabel thresholdLabel = new JLabel("Convergence Threshold:");
+        createLabelForForecastDialogMethod("Convergence Threshold:", dialogPanel);
         thresholdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
-        dialogPanel.add(thresholdLabel);
         dialogPanel.add(thresholdSpinner);
 
         JButton closeButton = new JButton("Forecast");
@@ -88,10 +84,16 @@ public class ForecastDialogUI extends JDialog implements ActionListener {
         dialogPanel.add(closeButton);
     }
 
+    public static void createLabelForForecastDialogMethod(String labelDescription, JPanel panel){
+        JLabel label = new JLabel(labelDescription);
+        panel.add(label);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
 
         List<Double> forecasts = new ArrayList<>();
+
         try {
             forecasts = TimeSeriesForecast.getForecasts(getDateToForecastFrom(), getMonths(),
                     getEpochs(), getIterations(), getThreshold());
@@ -99,8 +101,10 @@ public class ForecastDialogUI extends JDialog implements ActionListener {
             System.out.println("Error");
         }
 
+        ForecastData forecastData = new ForecastData(timeSeriesLegendIndex, toYear, toMonth, forecasts);
+
         try {
-            ForecastUI.showForecast(timeSeriesLegendIndex, toYear, toMonth, forecasts);
+            ForecastUI.showForecast(forecastData);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

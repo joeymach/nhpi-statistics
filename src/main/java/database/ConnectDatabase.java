@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 
 public class ConnectDatabase {
     public static Connection connection = null;
+    static int queryCount = 0;
 
     public void establishConnection() throws Exception {
         int batchSize=20;
@@ -106,39 +107,60 @@ public class ConnectDatabase {
                 toYear != "All" || toMonth != "All") {
             query += " WHERE";
         }
-        int queryCount = 0;
 
-        if(province != "All") {
-            if (queryCount > 0) {
-                query += " AND";
-            }
-            query += " province=\"" + province + "\"";
-            queryCount += 1;
-        }
-        if(city != "All") {
-            if (queryCount > 0) {
-                query += " AND";
-            }
-            query += " city=\"" + city + "\"";
-            queryCount += 1;
-        }
-
-        if(fromYear != "All" && fromMonth != "All") {
-            if (queryCount > 0) {
-                query += " AND";
-            }
-            query += " ((year=" + fromYear + " AND month>=" + fromMonth + ") OR year>=" + (parseInt(fromYear) + 1) + ")";
-            queryCount += 1;
-        }
-        if(toYear != "All" && toMonth != "All") {
-            if (queryCount > 0) {
-                query += " AND";
-            }
-            query += " ((year=" + toYear + " AND month<=" + toMonth + ") OR year<=" + (parseInt(toYear) - 1) + ")";
-            queryCount += 1;
-        }
+        query += addAndClause(queryCount);
+        query += checkProvince(province);
+        query += addAndClause(queryCount);
+        query += checkCity(city);
+        query += addAndClause(queryCount);
+        query += checkFromYearAndMonth(fromYear, fromMonth);
+        query += addAndClause(queryCount);
+        query += checkToYearAndMonth(toYear, toMonth);
 
         query += ";";
         return query;
+    }
+
+    public static String checkProvince(String province){
+        if(province != "All"){
+            ConnectDatabase.queryCount += 1;
+            String clause = " province=\"" + province + "\"";
+            return clause;
+        }
+        return "";
+    }
+
+    public static String checkCity(String city){
+        if(city != "All"){
+            ConnectDatabase.queryCount += 1;
+            String clause = " city=\"" + city + "\"";
+            return clause;
+        }
+        return "";
+    }
+
+    public static String checkFromYearAndMonth(String fromYear, String fromMonth){
+        if(fromYear != "All" && fromMonth != "All") {
+            ConnectDatabase.queryCount += 1;
+            String clause = " ((year=" + fromYear + " AND month>=" + fromMonth + ") OR year>=" + (parseInt(fromYear) + 1) + ")";
+            return clause;
+        }
+        return "";
+    }
+
+    public static String checkToYearAndMonth(String toYear, String toMonth){
+        if(toYear != "All" && toMonth != "All") {
+            ConnectDatabase.queryCount += 1;
+            String clause = " ((year=" + toYear + " AND month<=" + toMonth + ") OR year<=" + (parseInt(toYear) - 1) + ")";
+            return clause;
+        }
+        return "";
+    }
+
+    public static String addAndClause(int queryCount){
+        if(queryCount > 0){
+            return " AND";
+        }
+        return "";
     }
 }
