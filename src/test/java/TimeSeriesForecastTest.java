@@ -11,15 +11,19 @@ public class TimeSeriesForecastTest {
 
     @Test
     public void getForecastsSuccess() throws Exception {
-        List<Double> forecasts = TimeSeriesForecast.getForecasts("2022-12-01",15,
+        TimeSeriesForecast params = new TimeSeriesForecast("2022-12-01",15,
                 1, 1, 1);
+
+        List<Double> forecasts = forecasts = TimeSeriesForecast.getForecasts(params);
         assertEquals(forecasts.size(), 15);
     }
 
     @Test
     public void getEvaluationMetricsSuccess() throws Exception {
-        List<Double> forecasts = TimeSeriesForecast.getForecasts("2022-12-01",15,
+        TimeSeriesForecast params = new TimeSeriesForecast("2022-12-01",15,
                 1, 1, 1);
+
+        List<Double> forecasts = TimeSeriesForecast.getForecasts(params);
 
         String[][] metrics = TimeSeriesForecast.getEvaluationStats();
 

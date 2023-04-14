@@ -50,17 +50,25 @@ public class MainUI extends JFrame{
 	public static JPanel getTTestPanel() {
 		return tTestPanel;
 	}
+	static JButton configureButton = new JButton("Configure...");
+
 
 	public MainUI() {
 		// Set window title
 		super("NHPI Statistics");
 		this.visualizationsClass =  new Visualizations();
 
-		JButton configureButton = new JButton("Configure...");
 
-		JPanel settingsPanel = visualizationsClass.getSettingsPanel();
+		settingsPanel = visualizationsClass.getSettingsPanel();
 		settingsPanel.setVisible(false);
 
+		SettingsActionListener();
+		midContainerAdd();
+
+
+	}
+
+	public static void SettingsActionListener(){
 		configureButton.addActionListener(new ActionListener() {
 			private boolean isSettingsPanelVisible = false;
 
@@ -71,7 +79,9 @@ public class MainUI extends JFrame{
 
 			}
 		});
+	}
 
+	public void midContainerAdd(){
 		// Setting up wrapper mid-container for the below panels
 		JScrollPane mainScrollPane = new JScrollPane(midContainer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);

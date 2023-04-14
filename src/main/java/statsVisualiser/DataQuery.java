@@ -10,20 +10,66 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DataQuery {
-    public static String[][] getDataFromDatabase(String province, String city, String fromYear,
-                                          String fromMonth, String toYear, String toMonth) throws SQLException {
+
+    private String province;
+    private String city;
+    private String fromYear;
+    private String fromMonth;
+    private String toYear;
+    private String toMonth;
+
+    public DataQuery(String province, String city, String fromYear, String fromMonth, String toYear, String toMonth) {
+        this.province = province;
+        this.city = city;
+        this.fromYear = fromYear;
+        this.fromMonth = fromMonth;
+        this.toYear = toYear;
+        this.toMonth = toMonth;
+    }
+
+        public String getFromYear() {
+            return fromYear;
+        }
+
+        public String getToYear() {
+            return toYear;
+        }
+
+        public String getFromMonth() {
+            return fromMonth;
+
+        }
+
+        public String getToMonth() {
+            return toMonth;
+
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        // Constructor, getters and setters
+
+
+    public static String[][] getDataFromDatabase(DataQuery parameters) throws SQLException {
         String[][] dataCleaned;
-        if(!(fromYear == "All" && toYear == "All" && fromMonth == "All" && toMonth == "All") &&
-                (Integer.parseInt(fromYear) > Integer.parseInt(toYear) ||
-                        (Integer.parseInt(fromYear) == Integer.parseInt(toYear) &&
-                                (Integer.parseInt(fromMonth) > (Integer.parseInt(toMonth)))))) {
+        if(!(parameters.getFromYear().equals("All") && parameters.getToYear().equals("All")
+                && parameters.getFromMonth().equals("All") && parameters.getToMonth().equals("All")) &&
+                (Integer.parseInt(parameters.getFromYear()) > Integer.parseInt(parameters.getToYear()) ||
+                        (Integer.parseInt(parameters.getFromYear()) == Integer.parseInt(parameters.getToYear()) &&
+                                (Integer.parseInt(parameters.getFromMonth()) > (Integer.parseInt(parameters.getToMonth())))))) {
             dataCleaned = new String[][]{{"Invalid"}};
             System.out.println(dataCleaned[0][0] + " filter parameters for getting data");
         } else {
-            //ConnectDatabase mysql = new ConnectDatabase();
             Connection connection = ConnectDatabase.getConnection();
 
-            String query = ConnectDatabase.getQuery(province, city, fromYear, fromMonth, toYear, toMonth);
+            String query = ConnectDatabase.getQuery(parameters.getProvince(), parameters.getCity(),
+                    parameters.getFromYear(), parameters.getFromMonth(), parameters.getToYear(), parameters.getToMonth());
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet result = statement.executeQuery();
@@ -45,4 +91,5 @@ public class DataQuery {
 
         return dataCleaned;
     }
+
 }

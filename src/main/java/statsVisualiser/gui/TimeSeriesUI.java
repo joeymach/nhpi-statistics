@@ -49,9 +49,9 @@ public class TimeSeriesUI {
 
         String[][] data = new String[1][1];
         try {
-            data = DataQuery.getDataFromDatabase(timeSeriesParam.get("province"), timeSeriesParam.get("city"), timeSeriesParam.get("toYear"),
+            DataQuery query = new DataQuery(timeSeriesParam.get("province"), timeSeriesParam.get("city"), timeSeriesParam.get("toYear"),
                     timeSeriesParam.get("fromMonth"), timeSeriesParam.get("toYear"), timeSeriesParam.get("toMonth"));
-
+            data = DataQuery.getDataFromDatabase(query);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
