@@ -88,6 +88,7 @@ public class ForecastDialogUI extends JDialog implements ActionListener {
         dialogPanel.add(closeButton);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         List<Double> forecasts = new ArrayList<>();

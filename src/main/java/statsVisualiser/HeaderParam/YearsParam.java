@@ -5,6 +5,7 @@ import java.util.Vector;
 public class YearsParam implements HeaderParameter {
 
     // Returns vector of Strings from 1981 to 2022 that represents unique years in the dataset
+    @Override
     public Vector<String> getParamValues() {
         Vector<String> years = new Vector<String>();
         years.add("All");

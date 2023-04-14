@@ -312,6 +312,7 @@ public class Visualizations extends JFrame implements ListSelectionListener {
         chartLayout.add(piepanel);
     }
 
+    @Override
     public void valueChanged(ListSelectionEvent e) {
         array = LoadDataUI.getRawData();
 
