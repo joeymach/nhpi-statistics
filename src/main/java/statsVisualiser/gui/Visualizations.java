@@ -18,6 +18,8 @@ import org.jfree.data.time.Year;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import statsVisualiser.DataQuery;
+import statsVisualiser.ErrorComponents.ErrorUI;
+import statsVisualiser.ErrorComponents.ErrorVisualizations;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -322,13 +324,10 @@ public class Visualizations extends JFrame implements ListSelectionListener {
         piepanel.setVisible(false);
 
         List<String> selectedVisualizations = list.getSelectedValuesList();
-
         int selectedNumber = list.getSelectedValuesList().size();
+        ErrorUI error = new ErrorVisualizations(selectedNumber);
 
-        if (selectedNumber>2) {
-            JOptionPane.showMessageDialog(MainUI.getInstance(), "Only 2 visualizations can be selected. Please unselect an option before choosing.");
-        }
-        else{
+        if(error.isValid()){
             for (String x: selectedVisualizations){
                 if (x.equals("Line Chart")){
                     try {

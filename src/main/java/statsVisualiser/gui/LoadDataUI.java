@@ -1,5 +1,6 @@
 package statsVisualiser.gui;
 
+import com.formdev.flatlaf.ui.FlatListCellBorder;
 import statsVisualiser.Stats.DescriptiveStats;
 
 import javax.swing.*;
@@ -50,53 +51,34 @@ public class LoadDataUI implements ActionListener {
 
     public void createTableForRawData() {
         String[] columnNames = {"Year", "Month", "City", "Province", "NHPI % Change"};
-
         DefaultTableModel model = new DefaultTableModel(rawData, columnNames);
-
-        JTable table = new JTable(model);
-
-        TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(2).setPreferredWidth(200);
-        columnModel.getColumn(3).setPreferredWidth(200);
-
-        rawDataTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-        String title = "Raw Data Table: Province: " + UserParametersUI.loadDataParams.get("province") +
-                ", City: " + UserParametersUI.loadDataParams.get("city") +
-                ", fromYear: " + UserParametersUI.loadDataParams.get("fromYear") +
-                ", fromMonth: " + UserParametersUI.loadDataParams.get("fromMonth") +
-                ", toYear: " + UserParametersUI.loadDataParams.get("toYear") +
-                ", toMonth: " + UserParametersUI.loadDataParams.get("toMonth");
-
-        rawDataTable.setPreferredSize(new Dimension(1000, 600));
-        rawDataTable.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), title,
-                TitledBorder.CENTER, TitledBorder.TOP));
+        rawDataTable = createTableGeneric(model, "Raw Data Table: ");
     }
 
     public void createTableForDescData() {
         String[] columnNames = {"Data Description", "Value"};
-
         descData = DescriptiveStats.getDescriptiveStats(rawData);
         DefaultTableModel model = new DefaultTableModel(descData, columnNames);
+        descriptiveTable = createTableGeneric(model, "Descriptive Data Table: ");
+    }
 
+    private JScrollPane createTableGeneric(DefaultTableModel model, String tableTitle) {
         JTable table = new JTable(model);
 
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        descriptiveTable = new JScrollPane(table);
+        TableColumnModel columnModel = table.getColumnModel();
+        if(columnModel.getColumnCount() >= 3) {
+            columnModel.getColumn(2).setPreferredWidth(200);
+            columnModel.getColumn(3).setPreferredWidth(200);
+        }
 
-        String title = "Descriptive Data Table: Province: " + UserParametersUI.loadDataParams.get("province") +
-                ", City: " + UserParametersUI.loadDataParams.get("city") +
-                ", fromYear: " + UserParametersUI.loadDataParams.get("fromYear") +
-                ", fromMonth: " + UserParametersUI.loadDataParams.get("fromMonth") +
-                ", toYear: " + UserParametersUI.loadDataParams.get("toYear") +
-                ", toMonth: " + UserParametersUI.loadDataParams.get("toMonth");
-
-        descriptiveTable.setPreferredSize(new Dimension(1000, 600));
-        descriptiveTable.setBorder(BorderFactory.createTitledBorder(
+        String title = tableTitle + UserParametersUI.getUserParams();
+        JScrollPane genericTable = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        genericTable.setPreferredSize(new Dimension(1000, 600));
+        genericTable.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createEtchedBorder(), title,
                 TitledBorder.CENTER, TitledBorder.TOP));
+        return genericTable;
     }
 
     public void actionPerformed(ActionEvent event) {

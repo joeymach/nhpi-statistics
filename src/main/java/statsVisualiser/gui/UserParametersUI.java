@@ -1,6 +1,9 @@
 package statsVisualiser.gui;
 
 import statsVisualiser.DataQuery;
+import statsVisualiser.ErrorComponents.ErrorUI;
+import statsVisualiser.ErrorComponents.ErrorUserParams;
+import statsVisualiser.ErrorComponents.ErrorVisualizations;
 import statsVisualiser.HeaderParam.HeaderParameter;
 import statsVisualiser.HeaderParam.HeaderParameterValues;
 
@@ -129,11 +132,8 @@ public class UserParametersUI extends JFrame implements ActionListener {
             throw new RuntimeException(ex);
         }
 
-        if (data.length == 0 || data[0][0].equals("Invalid")) {
-            // Error alert window shown when selection parameters are invalid
-            JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
-        }
-        else {
+        ErrorUI error = new ErrorUserParams(data);
+        if(error.isValid()) {
             UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
                     cityList.getSelectedItem().toString(),
                     fromYearList.getSelectedItem().toString(),
@@ -151,12 +151,14 @@ public class UserParametersUI extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addTimeSeriesButton) {
-            TimeSeriesUI.addTimeSeries(provincesList.getSelectedItem().toString(),
-                    cityList.getSelectedItem().toString(),
-                    fromYearList.getSelectedItem().toString(),
-                    fromMonthList.getSelectedItem().toString(),
-                    toYearList.getSelectedItem().toString(),
-                    toMonthList.getSelectedItem().toString());
+            HashMap<String, String> userParams = new HashMap<>();
+            userParams.put("province", provincesList.getSelectedItem().toString());
+            userParams.put("city", cityList.getSelectedItem().toString());
+            userParams.put("fromYear", fromYearList.getSelectedItem().toString());
+            userParams.put("fromMonth", fromMonthList.getSelectedItem().toString());
+            userParams.put("toYear", toYearList.getSelectedItem().toString());
+            userParams.put("toMonth", toMonthList.getSelectedItem().toString());
+            TimeSeriesUI.addTimeSeries(userParams);
         }
         if (e.getSource() == loadDataButton) {
             UserParametersUI.setLoadDataParams(provincesList.getSelectedItem().toString(),
@@ -168,5 +170,14 @@ public class UserParametersUI extends JFrame implements ActionListener {
 
             loadDataUIToFrame();
         }
+    }
+
+    public static String getUserParams() {
+        return "Province: " + UserParametersUI.loadDataParams.get("province") +
+                ", City: " + UserParametersUI.loadDataParams.get("city") +
+                ", fromYear: " + UserParametersUI.loadDataParams.get("fromYear") +
+                ", fromMonth: " + UserParametersUI.loadDataParams.get("fromMonth") +
+                ", toYear: " + UserParametersUI.loadDataParams.get("toYear") +
+                ", toMonth: " + UserParametersUI.loadDataParams.get("toMonth");
     }
 }

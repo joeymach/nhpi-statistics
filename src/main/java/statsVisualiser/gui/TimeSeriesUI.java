@@ -12,6 +12,8 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.Year;
 import statsVisualiser.DataQuery;
+import statsVisualiser.ErrorComponents.ErrorUI;
+import statsVisualiser.ErrorComponents.ErrorUserParams;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -43,23 +45,20 @@ public class TimeSeriesUI {
     public static int numOfTimeSeries = 0;
 
     // Adding a new time series to be compared with the other loaded time series graph
-    public static void addTimeSeries(String province, String city, String fromYear,
-                                     String fromMonth, String toYear, String toMonth) {
+    public static void addTimeSeries(HashMap<String, String> timeSeriesParam) {
 
         String[][] data = new String[1][1];
         try {
-            data = DataQuery.getDataFromDatabase(province, city, fromYear,
-                    fromMonth, toYear, toMonth);
+            data = DataQuery.getDataFromDatabase(timeSeriesParam.get("province"), timeSeriesParam.get("city"), timeSeriesParam.get("toYear"),
+                    timeSeriesParam.get("fromMonth"), timeSeriesParam.get("toYear"), timeSeriesParam.get("toMonth"));
 
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
 
-        if (data.length == 0 || data[0][0].equals("Invalid")) {
-            // Error alert window shown when selection parameters are invalid
-            JOptionPane.showMessageDialog(MainUI.getInstance(), "Invalid parameters, please choose again.");
-        } else {
-            addTimeSeriesParams(province, city, fromYear, fromMonth, toYear, toMonth);
+        ErrorUI error = new ErrorUserParams(data);
+        if(error.isValid()) {
+            addTimeSeriesParams(timeSeriesParam);
             addTimeSeriesToDataset(data);
             renderTimeSeriesUIPanel();
             TTestUI.initializeTTestPanel();
@@ -86,15 +85,8 @@ public class TimeSeriesUI {
         MainUI.getInstance().setVisible(true);
     }
 
-    public static void addTimeSeriesParams(String province, String city, String fromYear,
-                                           String fromMonth, String toYear, String toMonth) {
-        HashMap<String, String> timeSeriesParam = new HashMap<>();
-        timeSeriesParam.put("province", province);
-        timeSeriesParam.put("city", city);
-        timeSeriesParam.put("fromYear", fromYear);
-        timeSeriesParam.put("fromMonth", fromMonth);
-        timeSeriesParam.put("toYear", toYear);
-        timeSeriesParam.put("toMonth", toMonth);
+    public static void addTimeSeriesParams(HashMap<String, String> newTimeSeriesParam ) {
+        HashMap<String, String> timeSeriesParam = new HashMap<>(newTimeSeriesParam);
         TimeSeriesUI.timeSeriesParams.add(timeSeriesParam);
     }
 

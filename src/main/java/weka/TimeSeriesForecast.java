@@ -85,6 +85,11 @@ public class TimeSeriesForecast {
     Gets forecaster evaluation stats: accuracy, mean error, model fitness
     */
     public static String[][] getEvaluationStats() throws Exception {
+        String[][] evaluationResult = createForecastModResult();
+        return evaluationResult;
+    }
+
+    private static double[] getEvalPerForecastMod(TSEvalModule module) throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_train.arff")));
         Instances nhpiTest = new Instances(new BufferedReader(new FileReader("nhpi_avg_date_test.arff")));
 
@@ -93,6 +98,19 @@ public class TimeSeriesForecast {
 
         List<List<NumericPrediction>> forecast = forecaster.forecast(108, System.out);
 
+        List<String> fields = new ArrayList<>();
+        fields.add("Value");
+        module.setTargetFields(fields);
+
+        int index = 0;
+        for(Instance i : nhpiTest) {
+            module.evaluateForInstance(forecast.get(index), i);
+            index += 1;
+        }
+        return module.calculateMeasure();
+    }
+
+    private static String[][] createForecastModResult() throws Exception {
         List<TSEvalModule> evaluationModules = new ArrayList<>();
         TSEvalModule mape = new MAPEModule();
         TSEvalModule mae = new MAEModule();
@@ -104,17 +122,9 @@ public class TimeSeriesForecast {
         String[] evaluationNames = {"Accuracy", "Mean Error", "Model Fitness"};
         String[][] evaluationResult = new String[3][2];
         int evalIndex = 0;
-        for (TSEvalModule mod : evaluationModules) {
-            int index = 0;
-            List<String> fields = new ArrayList<>();
-            fields.add("Value");
-            mod.setTargetFields(fields);
-            for(Instance i : nhpiTest) {
-                mod.evaluateForInstance(forecast.get(index), i);
-                index += 1;
-            }
-            double[] measure = mod.calculateMeasure();
-            if ((mod.getEvalName()).equals("MAPE")) {
+        for (TSEvalModule module : evaluationModules) {
+            double[] measure = getEvalPerForecastMod(module);
+            if ((module.getEvalName()).equals("MAPE")) {
                 evaluationResult[evalIndex] = new String[]{evaluationNames[evalIndex],
                         Double.toString(Math.round((100.0 - measure[0]) * 100.0) / 100.0)};
             } else {
