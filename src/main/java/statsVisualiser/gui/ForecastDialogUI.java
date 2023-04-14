@@ -95,8 +95,10 @@ public class ForecastDialogUI extends JDialog implements ActionListener {
         List<Double> forecasts = new ArrayList<>();
 
         try {
-            forecasts = TimeSeriesForecast.getForecasts(getDateToForecastFrom(), getMonths(),
+            TimeSeriesForecast params = new TimeSeriesForecast(getDateToForecastFrom(), getMonths(),
                     getEpochs(), getIterations(), getThreshold());
+
+            forecasts = TimeSeriesForecast.getForecasts(params);
         } catch (Exception ex) {
             System.out.println("Error");
         }

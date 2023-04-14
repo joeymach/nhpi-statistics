@@ -9,11 +9,16 @@ import java.util.HashMap;
 
 public class TTest {
     public static void main(String[] args) throws Exception {
-        String[][] data1 = DataQuery.getDataFromDatabase("Nova Scotia", "All", "All",
+
+        DataQuery query1 = new DataQuery("Nova Scotia", "All", "All",
                 "All", "All", "All");
 
-        String[][] data2 = DataQuery.getDataFromDatabase("All", "All", "All",
+        DataQuery query2 = new DataQuery("All", "All", "All",
                 "All", "All", "All");
+
+        String[][] data1 = DataQuery.getDataFromDatabase(query1);
+
+        String[][] data2 = DataQuery.getDataFromDatabase(query2);
 
         SummaryStatistics statsOne = getSummaryStatistics(data1);
         SummaryStatistics statsTwo = getSummaryStatistics(data2);
@@ -53,9 +58,11 @@ public class TTest {
     }
 
     public static String[][] getDataFromParams(HashMap<String, String> timeSeriesParam) throws SQLException {
-        String[][] data = DataQuery.getDataFromDatabase(timeSeriesParam.get("province"), timeSeriesParam.get("city"),
+        DataQuery query = new DataQuery(timeSeriesParam.get("province"), timeSeriesParam.get("city"),
                 timeSeriesParam.get("fromYear"), timeSeriesParam.get("fromMonth"),
                 timeSeriesParam.get("toYear"), timeSeriesParam.get("toMonth"));
+
+        String[][] data = DataQuery.getDataFromDatabase(query);
         return data;
     }
 }

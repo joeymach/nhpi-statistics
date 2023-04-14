@@ -27,7 +27,39 @@ import java.util.Map;
 
 public class TimeSeriesForecast {
     static WekaForecaster forecaster;
+    private String dateToForecastFrom;
+    private int numMonthsToForecast;
+    private int epoch;
+    private int iteration;
+    private int convergenceThreshold;
 
+    public TimeSeriesForecast(String dateToForecastFrom, int numMonthsToForecast, int epoch, int iteration, int convergenceThreshold) {
+        this.dateToForecastFrom = dateToForecastFrom;
+        this.numMonthsToForecast = numMonthsToForecast;
+        this.epoch = epoch;
+        this.iteration = iteration;
+        this.convergenceThreshold = convergenceThreshold;
+    }
+
+    public String getDateToForecastFrom() {
+        return dateToForecastFrom;
+    }
+
+    public int getNumMonthsToForecast() {
+        return numMonthsToForecast;
+    }
+
+    public int getEpoch() {
+        return epoch;
+    }
+
+    public int getIteration() {
+        return iteration;
+    }
+
+    public int getConvergenceThreshold() {
+        return convergenceThreshold;
+    }
     public static void main(String[] args) throws Exception {
         Instances nhpiTrain = new Instances(new BufferedReader(new FileReader("nhpi_avg_date.arff")));
 
@@ -50,26 +82,53 @@ public class TimeSeriesForecast {
     Output: HashMap with 1 element containing (key, value) pair of (WekaForecaster, futureForecastPredictions)
     Gets the forecaster model and the future forecasts for time series
     */
-    public static List<Double> getForecasts(String dateToForecastFrom, int numMonthsToForecast,
-                                                           int epoch, int iteration, int convergenceThreshold)
-                                                           throws Exception {
-        Instances nhpiData = TimeSeriesForecast.getPrimingData(dateToForecastFrom);
+//    public static List<Double> getForecasts(String dateToForecastFrom, int numMonthsToForecast,
+//                                                           int epoch, int iteration, int convergenceThreshold)
+//                                                           throws Exception {
+//        Instances nhpiData = TimeSeriesForecast.getPrimingData(dateToForecastFrom);
+//
+//        forecaster = new ForecastBuilderConcrete()
+//                .setEpoch(epoch)
+//                .setIteration(iteration)
+//                .setConvergenceThreshold(convergenceThreshold)
+//                .buildForecaster();
+//
+//        forecaster.buildForecaster(nhpiData);
+//        forecaster.primeForecaster(nhpiData);
+//
+//        List<List<NumericPrediction>> forecast = forecaster.forecast(numMonthsToForecast, System.out);
+//
+//        List<Double> forecastResult = new ArrayList<>();
+//
+//        System.out.println("Forecast Results:");
+//        for (int i = 0; i < numMonthsToForecast; i++) {
+//            List<NumericPrediction> predsAtStep = forecast.get(i);
+//            NumericPrediction predForTarget = predsAtStep.get(0);
+//            forecastResult.add(Math.round(predForTarget.predicted() * 100.00) / 100.00);
+//            System.out.println(predForTarget.predicted());
+//        }
+//
+//        return forecastResult;
+//    }
+
+    public static List<Double> getForecasts(TimeSeriesForecast forecastParams) throws Exception {
+        Instances nhpiData = TimeSeriesForecast.getPrimingData(forecastParams.getDateToForecastFrom());
 
         forecaster = new ForecastBuilderConcrete()
-                .setEpoch(epoch)
-                .setIteration(iteration)
-                .setConvergenceThreshold(convergenceThreshold)
+                .setEpoch(forecastParams.getEpoch())
+                .setIteration(forecastParams.getIteration())
+                .setConvergenceThreshold(forecastParams.getConvergenceThreshold())
                 .buildForecaster();
 
         forecaster.buildForecaster(nhpiData);
         forecaster.primeForecaster(nhpiData);
 
-        List<List<NumericPrediction>> forecast = forecaster.forecast(numMonthsToForecast, System.out);
+        List<List<NumericPrediction>> forecast = forecaster.forecast(forecastParams.getNumMonthsToForecast(), System.out);
 
         List<Double> forecastResult = new ArrayList<>();
 
         System.out.println("Forecast Results:");
-        for (int i = 0; i < numMonthsToForecast; i++) {
+        for (int i = 0; i < forecastParams.getNumMonthsToForecast(); i++) {
             List<NumericPrediction> predsAtStep = forecast.get(i);
             NumericPrediction predForTarget = predsAtStep.get(0);
             forecastResult.add(Math.round(predForTarget.predicted() * 100.00) / 100.00);
@@ -78,6 +137,7 @@ public class TimeSeriesForecast {
 
         return forecastResult;
     }
+
 
     /*
     Input: WekaForecaster forecaster

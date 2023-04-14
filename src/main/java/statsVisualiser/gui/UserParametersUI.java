@@ -122,12 +122,13 @@ public class UserParametersUI extends JFrame implements ActionListener {
     public void loadDataUIToFrame() {
         String[][] data = new String[1][1];
         try {
-            data = DataQuery.getDataFromDatabase(provincesList.getSelectedItem().toString(),
+            DataQuery query = new DataQuery(provincesList.getSelectedItem().toString(),
                     cityList.getSelectedItem().toString(),
                     fromYearList.getSelectedItem().toString(),
                     fromMonthList.getSelectedItem().toString(),
                     toYearList.getSelectedItem().toString(),
                     toMonthList.getSelectedItem().toString());
+            data = DataQuery.getDataFromDatabase(query);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }

@@ -8,8 +8,9 @@ public class DescriptiveStatsTest {
 
     @Test
     public void getDescriptiveStatsSuccess() throws Exception {
-        String[][] data = DataQuery.getDataFromDatabase("All", "All",
+        DataQuery query = new DataQuery("All", "All",
                 "2000", "1", "2010", "1");
+        String[][] data = DataQuery.getDataFromDatabase(query);
 
         String[][] descriptiveStats = DescriptiveStats.getDescriptiveStats(data);
 
