@@ -77,6 +77,11 @@ public class TimeSeriesForecast {
         }
     }
 
+    /*
+    Input: TimeSeriesForecast forecastParams
+    Output: HashMap with 1 element containing (key, value) pair of (WekaForecaster, futureForecastPredictions)
+    Gets the forecaster model and the future forecasts for time series
+    */
     public static List<Double> getForecasts(TimeSeriesForecast forecastParams) throws Exception {
         Instances nhpiData = TimeSeriesForecast.getPrimingData(forecastParams.getDateToForecastFrom());
 
